@@ -1,0 +1,140 @@
+/* styles.css — Plain CSS for the whole app. Kept simple and in one file so the
+   focus stays on React, not styling. Class names use a light BEM-ish convention
+   (block__element, block--modifier). */
+
+/* A small reset so spacing is predictable across browsers. */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: #f4f6fb;
+  color: #1f2933;
+  line-height: 1.5;
+}
+
+/* The centered page container. */
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 2rem 1rem 4rem;
+}
+
+.page__header {
+  margin-bottom: 1.5rem;
+}
+
+.page__header h1 {
+  margin: 0;
+  font-size: 1.9rem;
+}
+
+.subtitle {
+  margin: 0.25rem 0 0;
+  color: #647084;
+}
+
+/* A reusable "card" surface for the form and the table. */
+.card {
+  background: #ffffff;
+  border: 1px solid #e3e8f0;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 1px 3px rgba(16, 24, 40, 0.04);
+}
+
+.card h2 {
+  margin-top: 0;
+  font-size: 1.2rem;
+}
+
+/* Form layout: stacked label + input rows. */
+.form__row {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0.9rem;
+}
+
+.form__row label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+  color: #3a4658;
+}
+
+input {
+  padding: 0.55rem 0.7rem;
+  border: 1px solid #cbd2e0;
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+
+input:focus {
+  outline: none;
+  border-color: #4f7cff;
+  box-shadow: 0 0 0 3px rgba(79, 124, 255, 0.15);
+}
+
+/* Buttons. */
+.btn {
+  border: 1px solid #cbd2e0;
+  background: #ffffff;
+  color: #1f2933;
+  padding: 0.5rem 0.9rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  margin-right: 0.4rem;
+}
+
+.btn:hover {
+  background: #f0f3fa;
+}
+
+.btn--primary {
+  background: #4f7cff;
+  border-color: #4f7cff;
+  color: #ffffff;
+}
+
+.btn--primary:hover {
+  background: #3a66e6;
+}
+
+.btn--small {
+  padding: 0.3rem 0.6rem;
+  font-size: 0.8rem;
+}
+
+/* The students table. */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  text-align: left;
+  padding: 0.6rem 0.5rem;
+  border-bottom: 1px solid #eef1f6;
+  vertical-align: middle;
+}
+
+.table th {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: #647084;
+}
+
+/* The status message line. */
+.message {
+  background: #eaf0ff;
+  border: 1px solid #c9d6ff;
+  color: #2a44a8;
+  padding: 0.6rem 0.9rem;
+  border-radius: 8px;
+}

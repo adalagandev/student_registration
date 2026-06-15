@@ -1,0 +1,22 @@
+{
+  "name": "student-registration-frontend",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "//": "scripts are shortcuts you run with `npm run <name>`. `dev` starts the local dev server.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "//dependencies": "Packages shipped to the browser. React is the UI library; react-dom renders it into the page.",
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "//devDependencies": "Tools used only while developing/building. Vite is the build tool + dev server.",
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.1",
+    "vite": "^5.4.2"
+  }
+}

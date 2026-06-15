@@ -1,0 +1,4 @@
+# Python dependencies for the backend.
+# Install them with:  pip install -r requirements.txt
+Flask==3.0.3        # The web framework that powers our REST API.
+Flask-Cors==4.0.1   # Lets the React frontend (different port) call this API.

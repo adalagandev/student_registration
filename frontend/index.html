@@ -1,0 +1,25 @@
+<!doctype html>
+<!--
+  index.html — The single HTML page that hosts our entire React app.
+
+  A React app is a "Single Page Application" (SPA): the browser loads this one
+  HTML file, and React then builds and updates everything inside <div id="root">
+  using JavaScript. We never write more .html files; we write components instead.
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- Makes the layout responsive on phones/tablets. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Registration</title>
+  </head>
+  <body>
+    <!-- This empty div is the "mount point". React will inject the whole UI
+         in here. The id="root" is what main.jsx looks for. -->
+    <div id="root"></div>
+
+    <!-- This <script> loads our JavaScript entry point. type="module" enables
+         modern import/export syntax. Vite handles bundling everything it imports. -->
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
