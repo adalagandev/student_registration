@@ -14,6 +14,7 @@ const EMPTY_FORM = {
   email: "",
   program: "",
   address: "",
+  phone: "", // optional contact number
 };
 
 // `props` arrive as one object. Here we use object DESTRUCTURING in the
@@ -108,6 +109,18 @@ export default function StudentForm({ onAddStudent }) {
           value={form.address}
           onChange={handleChange}
           required
+        />
+      </div>
+
+      <div className="form__row">
+        <label htmlFor="phone">Phone</label>
+        <input
+          id="phone"
+          name="phone"
+          value={form.phone}
+          onChange={handleChange}
+          placeholder="(optional)"
+          // Note: no `required` here — phone is optional.
         />
       </div>
 

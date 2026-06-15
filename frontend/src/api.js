@@ -47,21 +47,80 @@ export async function createStudent(student) {
 }
 
 /**
- * Update ONLY the address of an existing student.
+ * Update a student's editable contact fields (email, address, phone).
+ * The backend ignores name/program here on purpose.
  * @param {number} id - the student's id
- * @param {string} address - the new address
+ * @param {object} fields - { email, address, phone }
  * Returns: a Promise resolving to the updated student.
  */
-export async function updateStudentAddress(id, address) {
-  const response = await fetch(`${BASE_URL}/students/${id}/address`, {
+export async function updateStudent(id, fields) {
+  const response = await fetch(`${BASE_URL}/students/${id}`, {
     method: "PUT", // PUT = "update existing data".
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ address }), // shorthand for { address: address }
+    body: JSON.stringify(fields),
   });
 
   const data = await response.json();
   if (!response.ok) {
-    throw new Error(data.error || "Failed to update address.");
+    throw new Error(data.error || "Failed to update student.");
+  }
+  return data;
+}
+
+/**
+ * Get the list of supporting documents already on file for a student.
+ * @param {number} id - the student's id
+ * Returns: a Promise resolving to an array of { id, name, uploadedAt }.
+ */
+export async function getStudentDocuments(id) {
+  const response = await fetch(`${BASE_URL}/students/${id}/documents`);
+  if (!response.ok) {
+    throw new Error("Failed to load documents.");
+  }
+  return response.json();
+}
+
+/**
+ * Build the direct URL to view/open one document's PDF. We use this as the
+ * `href` of a link so the browser can open the file in a new tab.
+ * @param {number} studentId
+ * @param {number} docId
+ * Returns: a string URL.
+ */
+export function documentUrl(studentId, docId) {
+  return `${BASE_URL}/students/${studentId}/documents/${docId}`;
+}
+
+/**
+ * Change a student's program by uploading 1-2 supporting PDF forms.
+ * @param {number} id - the student's id
+ * @param {string} program - the new program name
+ * @param {File[]} files - 1 or 2 PDF File objects from a file <input>
+ * Returns: a Promise resolving to the updated student.
+ */
+export async function submitProgramChange(id, program, files) {
+  // FormData is the browser object for sending multipart/form-data — the format
+  // required when a request includes binary files. We append text fields and
+  // files to it just like filling out an HTML form.
+  const formData = new FormData();
+  formData.append("program", program);
+  // Append each file under the SAME field name "forms"; the backend reads them
+  // all with request.files.getlist("forms").
+  for (const file of files) {
+    formData.append("forms", file);
+  }
+
+  const response = await fetch(`${BASE_URL}/students/${id}/program-change`, {
+    method: "POST",
+    // IMPORTANT GOTCHA: do NOT set a "Content-Type" header here. When the body
+    // is a FormData object, the browser sets it automatically AND adds the
+    // required multipart "boundary" marker. Setting it by hand breaks the upload.
+    body: formData,
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || "Failed to change program.");
   }
   return data;
 }

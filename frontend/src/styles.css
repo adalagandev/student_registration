@@ -1,112 +1,174 @@
-/* styles.css — Plain CSS for the whole app. Kept simple and in one file so the
-   focus stays on React, not styling. Class names use a light BEM-ish convention
-   (block__element, block--modifier). */
+/* styles.css — A clean, modern light theme with a single vibrant accent.
+   Kept in one file so the focus stays on React, not styling.
+   Class names use a light BEM-ish convention (block__element, block--modifier). */
 
-/* A small reset so spacing is predictable across browsers. */
+/* ---------------------------------------------------------------------------
+   Design tokens. CSS custom properties (the --name variables) declared on
+   :root are reusable everywhere via var(--name). Changing one value here
+   re-themes the whole app — this is the CSS equivalent of a theme config.
+--------------------------------------------------------------------------- */
+:root {
+  --bg: #f6f7fb;            /* page background */
+  --surface: #ffffff;       /* cards / dialog background */
+  --text: #161b26;          /* primary text */
+  --text-muted: #6b7385;    /* secondary text */
+  --border: #e6e9f0;        /* subtle borders */
+  --accent: #6c5ce7;        /* the single vibrant accent (violet) */
+  --accent-hover: #5a4bd1;
+  --accent-soft: #eeebfd;   /* tinted accent background */
+  --danger: #d6336c;        /* error text */
+  --radius: 14px;
+  --shadow-sm: 0 1px 2px rgba(20, 23, 33, 0.06);
+  --shadow-md: 0 10px 30px rgba(20, 23, 33, 0.12);
+}
+
 * {
   box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  background: #f4f6fb;
-  color: #1f2933;
-  line-height: 1.5;
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  /* A soft gradient wash gives depth without distracting from the content. */
+  background:
+    radial-gradient(1200px 600px at 100% -10%, var(--accent-soft), transparent 60%),
+    var(--bg);
+  color: var(--text);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
 }
 
 /* The centered page container. */
 .page {
-  max-width: 860px;
+  max-width: 920px;
   margin: 0 auto;
-  padding: 2rem 1rem 4rem;
+  padding: 2.5rem 1.25rem 5rem;
 }
 
 .page__header {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.75rem;
 }
 
 .page__header h1 {
   margin: 0;
-  font-size: 1.9rem;
+  font-size: 2.1rem;
+  letter-spacing: -0.02em;
+  /* Accent-tinted gradient text for a modern headline. */
+  background: linear-gradient(90deg, var(--text), var(--accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .subtitle {
-  margin: 0.25rem 0 0;
-  color: #647084;
+  margin: 0.35rem 0 0;
+  color: var(--text-muted);
 }
 
-/* A reusable "card" surface for the form and the table. */
+/* Reusable card surface for the form and the table. */
 .card {
-  background: #ffffff;
-  border: 1px solid #e3e8f0;
-  border-radius: 12px;
-  padding: 1.5rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.6rem;
   margin-bottom: 1.5rem;
-  box-shadow: 0 1px 3px rgba(16, 24, 40, 0.04);
+  box-shadow: var(--shadow-sm);
 }
 
 .card h2 {
   margin-top: 0;
-  font-size: 1.2rem;
+  font-size: 1.25rem;
+  letter-spacing: -0.01em;
 }
 
 /* Form layout: stacked label + input rows. */
 .form__row {
   display: flex;
   flex-direction: column;
-  margin-bottom: 0.9rem;
+  margin-bottom: 0.95rem;
+}
+
+.form__row label,
+.section-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #3a4254;
 }
 
 .form__row label {
-  font-size: 0.85rem;
-  font-weight: 600;
-  margin-bottom: 0.3rem;
-  color: #3a4658;
+  margin-bottom: 0.35rem;
+}
+
+.section-title {
+  margin: 0.25rem 0 0.75rem;
+  font-size: 0.95rem;
 }
 
 input {
-  padding: 0.55rem 0.7rem;
-  border: 1px solid #cbd2e0;
-  border-radius: 8px;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
   font-size: 0.95rem;
+  background: #fcfcfe;
+  color: var(--text);
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
 
 input:focus {
   outline: none;
-  border-color: #4f7cff;
-  box-shadow: 0 0 0 3px rgba(79, 124, 255, 0.15);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-soft);
+}
+
+/* File input gets a lightly styled "Choose files" button. */
+input[type="file"] {
+  padding: 0.5rem;
+  background: #fcfcfe;
+}
+input[type="file"]::file-selector-button {
+  border: 1px solid var(--border);
+  background: #fff;
+  border-radius: 8px;
+  padding: 0.35rem 0.7rem;
+  margin-right: 0.7rem;
+  cursor: pointer;
+  color: var(--text);
 }
 
 /* Buttons. */
 .btn {
-  border: 1px solid #cbd2e0;
+  border: 1px solid var(--border);
   background: #ffffff;
-  color: #1f2933;
-  padding: 0.5rem 0.9rem;
-  border-radius: 8px;
+  color: var(--text);
+  padding: 0.55rem 1rem;
+  border-radius: 10px;
   font-size: 0.9rem;
+  font-weight: 500;
   cursor: pointer;
-  margin-right: 0.4rem;
+  transition: background 0.15s, border-color 0.15s, transform 0.05s;
 }
 
 .btn:hover {
-  background: #f0f3fa;
+  background: #f3f4f9;
+}
+
+.btn:active {
+  transform: translateY(1px);
 }
 
 .btn--primary {
-  background: #4f7cff;
-  border-color: #4f7cff;
+  background: var(--accent);
+  border-color: var(--accent);
   color: #ffffff;
 }
 
 .btn--primary:hover {
-  background: #3a66e6;
+  background: var(--accent-hover);
 }
 
 .btn--small {
-  padding: 0.3rem 0.6rem;
-  font-size: 0.8rem;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.82rem;
 }
 
 /* The students table. */
@@ -118,23 +180,194 @@ input:focus {
 .table th,
 .table td {
   text-align: left;
-  padding: 0.6rem 0.5rem;
-  border-bottom: 1px solid #eef1f6;
+  padding: 0.7rem 0.6rem;
+  border-bottom: 1px solid #f0f1f6;
   vertical-align: middle;
 }
 
 .table th {
-  font-size: 0.8rem;
+  font-size: 0.72rem;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
-  color: #647084;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.table tbody tr:hover {
+  background: #fafaff;
+}
+
+/* A small accent "pill" used to display the program. */
+.pill {
+  display: inline-block;
+  padding: 0.18rem 0.6rem;
+  background: var(--accent-soft);
+  color: var(--accent-hover);
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
 }
 
 /* The status message line. */
 .message {
-  background: #eaf0ff;
-  border: 1px solid #c9d6ff;
-  color: #2a44a8;
-  padding: 0.6rem 0.9rem;
+  background: var(--accent-soft);
+  border: 1px solid #d9d2fb;
+  color: var(--accent-hover);
+  padding: 0.7rem 1rem;
+  border-radius: 10px;
+}
+
+/* ---------------------------------------------------------------------------
+   Modal (rendered via a portal into <body> by Modal.jsx)
+--------------------------------------------------------------------------- */
+.modal__overlay {
+  position: fixed;        /* covers the whole viewport */
+  inset: 0;               /* shorthand for top/right/bottom/left: 0 */
+  background: rgba(22, 27, 38, 0.45);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 4vh 1rem;
+  overflow-y: auto;       /* allow scrolling if the dialog is tall */
+  z-index: 1000;
+  animation: overlay-in 0.15s ease-out;
+}
+
+.modal__dialog {
+  background: var(--surface);
+  border-radius: 18px;
+  width: 100%;
+  max-width: 540px;
+  box-shadow: var(--shadow-md);
+  animation: dialog-in 0.18s ease-out;
+}
+
+.modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.2rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.modal__title {
+  margin: 0;
+  font-size: 1.15rem;
+}
+
+.modal__close {
+  border: none;
+  background: transparent;
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--text-muted);
+  padding: 0 0.25rem;
   border-radius: 8px;
+}
+
+.modal__close:hover {
+  color: var(--text);
+  background: #f1f2f7;
+}
+
+.modal__body {
+  padding: 1.5rem;
+}
+
+/* Read-only identity block at the top of the edit modal. */
+.readonly-grid {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  padding: 0.9rem 1rem;
+  background: #fafbfe;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 1.25rem;
+}
+
+.readonly-grid__label {
+  display: block;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-bottom: 0.25rem;
+}
+
+.readonly-grid__value {
+  font-weight: 600;
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 1.5rem 0;
+}
+
+.hint {
+  margin: 0 0 0.9rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.file-list {
+  margin: 0 0 0.75rem;
+  padding-left: 1.1rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.error {
+  color: var(--danger);
+  font-size: 0.85rem;
+  margin: 0 0 0.75rem;
+}
+
+/* List of existing supporting documents (links). */
+.doc-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.doc-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 0.5rem;
+  background: #fafbfe;
+}
+
+.doc-list a {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+  word-break: break-all;
+}
+
+.doc-list a:hover {
+  text-decoration: underline;
+}
+
+.doc-list__date {
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* Simple keyframe animations for a polished modal entrance. */
+@keyframes overlay-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes dialog-in {
+  from { opacity: 0; transform: translateY(-8px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
 }

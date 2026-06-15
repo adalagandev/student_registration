@@ -9,6 +9,9 @@ env/
 *.db
 backend/students.db
 
+# Uploaded program-change PDF forms — generated at runtime.
+backend/uploads/
+
 # ---- Node / Vite (frontend) ----
 node_modules/
 dist/

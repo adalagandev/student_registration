@@ -45,11 +45,12 @@
 import { useState, useEffect } from "react";
 
 // Import the API functions that talk to the Python backend.
-import { getStudents, createStudent, updateStudentAddress } from "./api.js";
+import { getStudents, createStudent, updateStudent, submitProgramChange } from "./api.js";
 
-// Import our two child components.
+// Import our child components.
 import StudentForm from "./components/StudentForm.jsx";
 import StudentList from "./components/StudentList.jsx";
+import EditStudentModal from "./components/EditStudentModal.jsx";
 
 // The App component. `export default` makes it importable from other files
 // (see main.jsx: `import App from "./App.jsx"`).
@@ -64,6 +65,10 @@ export default function App() {
 
   // Whether we are currently loading the list (used to show "Loading...").
   const [loading, setLoading] = useState(true);
+
+  // Which student (if any) is currently being edited in the modal. `null` means
+  // the modal is closed. When it holds a student object, the modal is open.
+  const [editingStudent, setEditingStudent] = useState(null);
 
   // ---- LOAD DATA ON FIRST RENDER ----------------------------------------
   // useEffect with an empty dependency array [] runs exactly once, right after
@@ -102,16 +107,34 @@ export default function App() {
     }
   }
 
-  // Called by <StudentList> when the user saves an edited address.
-  async function handleUpdateAddress(id, newAddress) {
+  // Helper that swaps one updated student into the list, immutably. .map()
+  // returns a NEW array; for the matching id we use the updated record, others
+  // stay as-is. Used by both edit actions below.
+  function replaceStudent(updated) {
+    setStudents((previous) =>
+      previous.map((student) => (student.id === updated.id ? updated : student))
+    );
+  }
+
+  // Called by the edit modal when the user saves contact details.
+  async function handleUpdateStudent(id, fields) {
     try {
-      const updated = await updateStudentAddress(id, newAddress);
-      // Replace just the one student that changed. .map() returns a new array;
-      // for the matching id we swap in the updated record, others stay as-is.
-      setStudents((previous) =>
-        previous.map((student) => (student.id === id ? updated : student))
-      );
-      setMessage(`Updated address for ${updated.firstName}.`);
+      const updated = await updateStudent(id, fields);
+      replaceStudent(updated);
+      setMessage(`Saved changes for ${updated.firstName}.`);
+      setEditingStudent(null); // close the modal on success.
+    } catch (error) {
+      setMessage(error.message);
+    }
+  }
+
+  // Called by the edit modal when the user submits a program change + PDFs.
+  async function handleProgramChange(id, program, files) {
+    try {
+      const updated = await submitProgramChange(id, program, files);
+      replaceStudent(updated);
+      setMessage(`Program updated to "${updated.program}" for ${updated.firstName}.`);
+      setEditingStudent(null); // close the modal on success.
     } catch (error) {
       setMessage(error.message);
     }
@@ -140,8 +163,19 @@ export default function App() {
         <p>Loading students…</p>
       ) : (
         <StudentList
-          students={students}                 // data passed down as a prop
-          onUpdateAddress={handleUpdateAddress} // handler passed down as a prop
+          students={students}        // data passed down as a prop
+          onEdit={setEditingStudent} // clicking "Edit" stores that student -> opens modal
+        />
+      )}
+
+      {/* Render the modal only when a student is selected for editing.
+          `&&` means: if editingStudent is truthy, render the element after it. */}
+      {editingStudent && (
+        <EditStudentModal
+          student={editingStudent}
+          onSave={handleUpdateStudent}
+          onProgramChange={handleProgramChange}
+          onClose={() => setEditingStudent(null)} // close = clear the selection
         />
       )}
     </div>
