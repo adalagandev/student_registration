@@ -92,6 +92,23 @@ export function documentUrl(studentId, docId) {
 }
 
 /**
+ * Permanently delete one supporting document (file + database row).
+ * @param {number} studentId
+ * @param {number} docId
+ * Returns: a Promise resolving when the delete succeeds.
+ */
+export async function deleteDocument(studentId, docId) {
+  const response = await fetch(`${BASE_URL}/students/${studentId}/documents/${docId}`, {
+    method: "DELETE", // DELETE = "remove this resource".
+  });
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error || "Failed to delete document.");
+  }
+  return response.json();
+}
+
+/**
  * Change a student's program by uploading 1-2 supporting PDF forms.
  * @param {number} id - the student's id
  * @param {string} program - the new program name

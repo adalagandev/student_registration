@@ -381,6 +381,39 @@ def get_document(student_id, doc_id):
     )
 
 
+@app.route("/api/students/<int:student_id>/documents/<int:doc_id>", methods=["DELETE"])
+def delete_document(student_id, doc_id):
+    """
+    DELETE /api/students/<id>/documents/<doc_id>
+    Permanently delete one supporting document: remove the file from disk AND the
+    row from the database. This cannot be undone.
+    """
+    conn = get_connection()
+    row = conn.execute(
+        "SELECT filename FROM documents WHERE id = ? AND student_id = ?",
+        (doc_id, student_id),
+    ).fetchone()
+
+    if row is None:
+        conn.close()
+        return jsonify({"error": "Document not found."}), 404
+
+    # Delete the physical file. We guard with exists() so a missing file (e.g.
+    # already deleted) doesn't crash the request — we still want to clear the row.
+    file_path = os.path.join(UPLOAD_DIR, str(student_id), row["filename"])
+    if os.path.exists(file_path):
+        os.remove(file_path)
+
+    # Remove the database record.
+    conn.execute("DELETE FROM documents WHERE id = ?", (doc_id,))
+    conn.commit()
+    conn.close()
+
+    # 200 with a small confirmation body. (204 "No Content" is also common, but
+    # returning JSON keeps the frontend's response-parsing consistent.)
+    return jsonify({"deleted": doc_id})
+
+
 # ---------------------------------------------------------------------------
 # Error handler for oversized uploads
 # ---------------------------------------------------------------------------

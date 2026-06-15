@@ -70,6 +70,11 @@ export default function App() {
   // the modal is closed. When it holds a student object, the modal is open.
   const [editingStudent, setEditingStudent] = useState(null);
 
+  // Which tab is currently shown. "register" = the form, "students" = the table.
+  // Using state for this is "conditional rendering": the value decides which
+  // component we draw, and clicking a tab just updates the value.
+  const [activeTab, setActiveTab] = useState("register");
+
   // ---- LOAD DATA ON FIRST RENDER ----------------------------------------
   // useEffect with an empty dependency array [] runs exactly once, right after
   // the component first appears. We use it to fetch the initial student list.
@@ -102,6 +107,7 @@ export default function App() {
       // mutate the old one with .push().
       setStudents((previous) => [created, ...previous]);
       setMessage(`Added ${created.firstName} ${created.lastName}.`);
+      setActiveTab("students"); // jump to the list so the new student is visible
     } catch (error) {
       setMessage(error.message);
     }
@@ -146,20 +152,37 @@ export default function App() {
     <div className="page">
       <header className="page__header">
         <h1>Student Registration</h1>
-        <p className="subtitle">Register a student, then view and edit them below.</p>
+        <p className="subtitle">Switch tabs to register a student or view the list.</p>
       </header>
 
-      {/* Pass our handler DOWN to the form via a prop named `onAddStudent`.
-          The form will call it when submitted. */}
-      <StudentForm onAddStudent={handleAddStudent} />
+      {/* Tab bar. Each button updates `activeTab`. We add the "tab--active"
+          class to whichever button matches the current tab so it's highlighted.
+          The template literal `${...}` builds the className string conditionally. */}
+      <div className="tabs" role="tablist">
+        <button
+          className={`tab ${activeTab === "register" ? "tab--active" : ""}`}
+          onClick={() => setActiveTab("register")}
+        >
+          Register student
+        </button>
+        <button
+          className={`tab ${activeTab === "students" ? "tab--active" : ""}`}
+          onClick={() => setActiveTab("students")}
+        >
+          Registered students ({students.length})
+        </button>
+      </div>
 
       {/* Conditional rendering: `&&` shows the element only when `message`
-          is truthy (non-empty). If message is "", nothing renders here. */}
+          is truthy (non-empty). Shown above the tab content either way. */}
       {message && <p className="message">{message}</p>}
 
-      {/* The ternary `condition ? a : b` chooses between two outputs.
-          While loading we show text; otherwise we show the table. */}
-      {loading ? (
+      {/* Show only the active tab's content. The form on "register"; the table
+          (or a loading line) on "students". */}
+      {activeTab === "register" ? (
+        // Pass our handler DOWN to the form via a prop named `onAddStudent`.
+        <StudentForm onAddStudent={handleAddStudent} />
+      ) : loading ? (
         <p>Loading students…</p>
       ) : (
         <StudentList
