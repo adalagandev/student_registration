@@ -65,6 +65,36 @@ body {
   color: var(--text-muted);
 }
 
+/* Tab bar that switches between the registration form and the student list. */
+.tabs {
+  display: flex;
+  gap: 0.25rem;
+  margin-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.tab {
+  border: none;
+  background: transparent;
+  padding: 0.7rem 1.1rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent; /* reserves space so active state doesn't shift layout */
+  margin-bottom: -1px;                    /* overlap the row's border */
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.tab:hover {
+  color: var(--text);
+}
+
+.tab--active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
 /* Reusable card surface for the form and the table. */
 .card {
   background: var(--surface);
@@ -169,6 +199,16 @@ input[type="file"]::file-selector-button {
 .btn--small {
   padding: 0.35rem 0.75rem;
   font-size: 0.82rem;
+}
+
+.btn--danger {
+  color: var(--danger);
+  border-color: #f3cad9;
+  background: #fdf2f6;
+}
+
+.btn--danger:hover {
+  background: #fbe2eb;
 }
 
 /* The students table. */
@@ -355,8 +395,14 @@ input[type="file"]::file-selector-button {
   text-decoration: underline;
 }
 
-.doc-list__date {
+.doc-list__meta {
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.doc-list__date {
   font-size: 0.75rem;
   color: var(--text-muted);
 }

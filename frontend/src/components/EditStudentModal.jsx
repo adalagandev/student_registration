@@ -9,7 +9,7 @@
 
 import { useState, useEffect } from "react";
 import Modal from "./Modal.jsx";
-import { getStudentDocuments, documentUrl } from "../api.js";
+import { getStudentDocuments, documentUrl, deleteDocument } from "../api.js";
 
 // Client-side limits that MIRROR the backend's validation. We validate here for
 // instant feedback, but the server re-checks because client checks can be
@@ -56,6 +56,23 @@ export default function EditStudentModal({ student, onSave, onProgramChange, onC
       cancelled = true;
     };
   }, [student.id]);
+
+  // Permanently delete one document. Because this is irreversible, we ask the
+  // user to confirm first. window.confirm() shows a native OK/Cancel dialog and
+  // returns true only if they click OK.
+  async function handleDeleteDocument(doc) {
+    const ok = window.confirm(`Permanently delete "${doc.name}"? This cannot be undone.`);
+    if (!ok) return;
+    try {
+      await deleteDocument(student.id, doc.id);
+      // Remove it from local state so the list updates instantly without a refetch.
+      // .filter() returns a NEW array excluding the deleted document.
+      setDocuments((previous) => previous.filter((d) => d.id !== doc.id));
+    } catch (error) {
+      // Surface the failure in the same inline error area used elsewhere.
+      setFileError(error.message);
+    }
+  }
 
   // Submit handler for the contact-details section.
   function handleSaveDetails(event) {
@@ -178,7 +195,17 @@ export default function EditStudentModal({ student, onSave, onProgramChange, onC
                 <a href={documentUrl(student.id, doc.id)} target="_blank" rel="noreferrer">
                   {doc.name}
                 </a>
-                <span className="doc-list__date">{doc.uploadedAt}</span>
+                <span className="doc-list__meta">
+                  <span className="doc-list__date">{doc.uploadedAt}</span>
+                  {/* Destructive action: a delete button styled as danger. */}
+                  <button
+                    type="button"
+                    className="btn btn--small btn--danger"
+                    onClick={() => handleDeleteDocument(doc)}
+                  >
+                    Delete
+                  </button>
+                </span>
               </li>
             ))}
           </ul>
