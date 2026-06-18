@@ -50,3 +50,19 @@ The frontend expects the backend running on port 5000 (hardcoded in `frontend/sr
 - **Match the heavy teaching-comment style.** Existing files explain syntax and "why" at a tutorial level; new code should be commented to the same density, and JS/React keywords are often documented inline. Don't strip these comments when editing.
 - **Stable, descriptive `id` attributes** are present on essentially every rendered element (e.g. `tab-register`, `student-row-{id}`, `edit-program-submit-btn`), used as handles to target elements in later requests. When adding markup, give it an id following the existing `block-element` / interpolated-`{id}` naming so the set stays complete and unique.
 - Theme is driven by CSS custom properties in `frontend/src/styles.css` (`:root` tokens + layered `--surface`/`--surface-2`/`--surface-3`). Re-theme by changing tokens rather than scattering colors.
+   
+## Branch & commit workflow
+
+All work is ticket-driven. Follow this flow for every change:
+
+1. **Every code change must be associated with a ticket.** No commits without a ticket number. If a change doesn't have a ticket yet, create one (e.g. in `bug.md` or your tracker) before writing code. Tickets use the `SR-<number>` key (see `bug.md`).
+2. **Branch per ticket.** Create a branch off `main` named with the ticket number prefix followed by a short, kebab-case description of the ticket:
+   ```
+   git checkout -b SR-104-fix-email-save
+   ```
+   Format: `SR-<number>-<short-description>`.
+3. **Commit messages are ticket-prefixed.** Every commit message starts with the ticket number, followed by an appropriate message:
+   ```
+   git commit -m "SR-104 persist edited email in save handler"
+   ```
+   Format: `SR-<number> <what the commit does>`.
