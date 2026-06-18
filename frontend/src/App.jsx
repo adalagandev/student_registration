@@ -162,7 +162,7 @@ export default function App() {
         <button
           id="tab-register"
           className={`tab ${activeTab === "register" ? "tab--active" : ""}`}
-          onClick={() => setActiveTab("students")}
+          onClick={() => setActiveTab("register")}
         >
           Register student
         </button>
