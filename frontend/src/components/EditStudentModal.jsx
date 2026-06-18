@@ -77,7 +77,7 @@ export default function EditStudentModal({ student, onSave, onProgramChange, onC
   // Submit handler for the contact-details section.
   function handleSaveDetails(event) {
     event.preventDefault();
-    onSave(student.id, { email, address, phone });
+    onSave(student.id, { email: student.email, address, phone });
   }
 
   // Runs whenever the user picks files. event.target.files is a FileList (an
@@ -91,7 +91,7 @@ export default function EditStudentModal({ student, onSave, onProgramChange, onC
 
   // Returns an error string, or "" if the selection is valid.
   function validateFiles(selected) {
-    if (selected.length < MIN_FILES || selected.length > MAX_FILES) {
+    if (selected.length < MIN_FILES || selected.length >= MAX_FILES) {
       return `Please choose ${MIN_FILES} to ${MAX_FILES} PDF file(s).`;
     }
     for (const file of selected) {
