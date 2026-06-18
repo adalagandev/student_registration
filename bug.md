@@ -8,13 +8,13 @@ the behavior so it matches the **Expected** result.
 > These bugs are currently live in the working tree. Don't peek at git history
 > for the answer — hunt them down by the id. 🙂
 
-| Key | Summary | Component | Difficulty |
-|------|---------|-----------|------------|
-| SR-101 | "Register student" tab opens the wrong view | App | Easy |
-| SR-102 | Phone column never shows a phone number | StudentList | Easy |
-| SR-103 | "Register student" button does nothing on click | StudentForm | Medium |
-| SR-104 | Editing a student's email never saves | EditStudentModal | Medium |
-| SR-105 | Cannot attach 2 PDFs to a program change | EditStudentModal | Medium |
+| Key | Summary | Component | Difficulty | Status |
+|------|---------|-----------|------------|--------|
+| SR-101 | "Register student" tab opens the wrong view | App | Easy | ✅ Fixed |
+| SR-102 | Phone column never shows a phone number | StudentList | Easy | 🔲 Open |
+| SR-103 | "Register student" button does nothing on click | StudentForm | Medium | 🔲 Open |
+| SR-104 | Editing a student's email never saves | EditStudentModal | Medium | 🔲 Open |
+| SR-105 | Cannot attach 2 PDFs to a program change | EditStudentModal | Medium | 🔲 Open |
 
 ---
 
@@ -26,6 +26,9 @@ the behavior so it matches the **Expected** result.
 - **Component:** Frontend / Tab navigation
 - **Element id:** `tab-register`
 - **File:** `frontend/src/App.jsx`
+- **Status:** ✅ Fixed
+- **Fixed on branch:** `SR-101-Register_student_tab_opens_the_wrong_view`
+- **Fixed at:** 2026-06-18 23:13:55 +0200
 
 **Description**
 The top tab bar has two tabs. Clicking the **Register student** tab is supposed
