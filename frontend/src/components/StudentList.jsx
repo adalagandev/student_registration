@@ -59,7 +59,7 @@ export default function StudentList({ students, onEdit }) {
               <td id={`student-program-${student.id}`}><span className="pill" id={`student-program-pill-${student.id}`}>{student.program}</span></td>
               <td id={`student-address-${student.id}`}>{student.address}</td>
               {/* phone may be empty; show a dash as a placeholder when so. */}
-              <td id={`student-phone-${student.id}`}>{student.phone && "—"}</td>
+              <td id={`student-phone-${student.id}`}>{student.phone || "—"}</td>
               {/* registeredAt comes from the server; formatDate handles blanks. */}
               <td id={`student-registered-${student.id}`}>{formatDate(student.registeredAt)}</td>
               <td id={`student-actions-${student.id}`}>
