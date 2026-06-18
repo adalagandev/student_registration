@@ -105,7 +105,8 @@ def init_db():
             email       TEXT    NOT NULL,
             program     TEXT    NOT NULL,                   -- changed only via PDF upload
             address     TEXT    NOT NULL,
-            phone       TEXT    NOT NULL DEFAULT ''         -- editable contact number
+            phone       TEXT    NOT NULL DEFAULT '',        -- editable contact number
+            registered_at TEXT  NOT NULL DEFAULT ''         -- when the student was registered (set by server)
         )
         """
     )
@@ -132,6 +133,12 @@ def init_db():
     if "phone" not in existing_columns:
         conn.execute("ALTER TABLE students ADD COLUMN phone TEXT NOT NULL DEFAULT ''")
 
+    # Same idea for the students table gaining a registered_at column. Older rows
+    # created before this column existed simply get an empty string (the DEFAULT),
+    # which the frontend renders as a dash.
+    if "registered_at" not in existing_columns:
+        conn.execute("ALTER TABLE students ADD COLUMN registered_at TEXT NOT NULL DEFAULT ''")
+
     # Same idea for the documents table gaining an original_name column.
     doc_columns = [row["name"] for row in conn.execute("PRAGMA table_info(documents)")]
     if "original_name" not in doc_columns:
@@ -156,6 +163,7 @@ def row_to_dict(row):
         "program": row["program"],
         "address": row["address"],
         "phone": row["phone"],
+        "registeredAt": row["registered_at"],
     }
 
 
@@ -204,15 +212,21 @@ def create_student():
     if not all([first_name, last_name, email, program, address]):
         return jsonify({"error": "First name, last name, email, program and address are required."}), 400
 
+    # The registration date is decided by the SERVER, not sent by the client.
+    # That way it cannot be forged or accidentally omitted by the frontend. We
+    # store an ISO-8601 string (e.g. "2026-06-15T14:30:00") — easy to sort and
+    # to format for display later.
+    registered_at = datetime.utcnow().isoformat(timespec="seconds")
+
     conn = get_connection()
     # "?" placeholders are parameterized queries: they safely insert values and
     # protect against SQL injection. Never build SQL by string-concatenating input.
     cursor = conn.execute(
         """
-        INSERT INTO students (first_name, last_name, email, program, address, phone)
-        VALUES (?, ?, ?, ?, ?, ?)
+        INSERT INTO students (first_name, last_name, email, program, address, phone, registered_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
         """,
-        (first_name, last_name, email, program, address, phone),
+        (first_name, last_name, email, program, address, phone, registered_at),
     )
     conn.commit()
     new_id = cursor.lastrowid

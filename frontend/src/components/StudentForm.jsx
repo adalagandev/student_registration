@@ -50,13 +50,13 @@ export default function StudentForm({ onAddStudent }) {
 
   return (
     // onSubmit wires our handler to the form's submit event.
-    <form className="card form" onSubmit={handleSubmit}>
-      <h2>Register a student</h2>
+    <form className="card form" id="register-form" onSubmit={handleSubmit}>
+      <h2 id="register-form-title">Register a student</h2>
 
       {/* A small reusable pattern: a label + input pair. `htmlFor` links the
           label to the input's id (in JSX it's htmlFor, not the HTML `for`). */}
-      <div className="form__row">
-        <label htmlFor="firstName">First name</label>
+      <div className="form__row" id="form-row-firstName">
+        <label htmlFor="firstName" id="label-firstName">First name</label>
         <input
           id="firstName"
           name="firstName"          // must match the key in our `form` state
@@ -66,8 +66,8 @@ export default function StudentForm({ onAddStudent }) {
         />
       </div>
 
-      <div className="form__row">
-        <label htmlFor="lastName">Last name</label>
+      <div className="form__row" id="form-row-lastName">
+        <label htmlFor="lastName" id="label-lastName">Last name</label>
         <input
           id="lastName"
           name="lastName"
@@ -77,8 +77,8 @@ export default function StudentForm({ onAddStudent }) {
         />
       </div>
 
-      <div className="form__row">
-        <label htmlFor="email">Email</label>
+      <div className="form__row" id="form-row-email">
+        <label htmlFor="email" id="label-email">Email</label>
         <input
           id="email"
           name="email"
@@ -89,8 +89,8 @@ export default function StudentForm({ onAddStudent }) {
         />
       </div>
 
-      <div className="form__row">
-        <label htmlFor="program">Program</label>
+      <div className="form__row" id="form-row-program">
+        <label htmlFor="program" id="label-program">Program</label>
         <input
           id="program"
           name="program"
@@ -101,8 +101,8 @@ export default function StudentForm({ onAddStudent }) {
         />
       </div>
 
-      <div className="form__row">
-        <label htmlFor="address">Address</label>
+      <div className="form__row" id="form-row-address">
+        <label htmlFor="address" id="label-address">Address</label>
         <input
           id="address"
           name="address"
@@ -112,8 +112,8 @@ export default function StudentForm({ onAddStudent }) {
         />
       </div>
 
-      <div className="form__row">
-        <label htmlFor="phone">Phone</label>
+      <div className="form__row" id="form-row-phone">
+        <label htmlFor="phone" id="label-phone">Phone</label>
         <input
           id="phone"
           name="phone"
@@ -124,7 +124,7 @@ export default function StudentForm({ onAddStudent }) {
         />
       </div>
 
-      <button type="submit" className="btn btn--primary">
+      <button type="submit" className="btn btn--primary" id="register-submit-btn">
         Register student
       </button>
     </form>

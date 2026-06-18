@@ -38,7 +38,7 @@ export default function Modal({ title, onClose, children }) {
   // createPortal(whatToRender, whereToRenderIt).
   return createPortal(
     // The overlay is the dim backdrop. Clicking it closes the modal.
-    <div className="modal__overlay" onClick={onClose}>
+    <div className="modal__overlay" id="modal-overlay" onClick={onClose}>
       {/*
         The dialog box itself. We stop click events here from "bubbling up" to
         the overlay — otherwise clicking INSIDE the dialog would also trigger the
@@ -46,17 +46,18 @@ export default function Modal({ title, onClose, children }) {
       */}
       <div
         className="modal__dialog"
+        id="modal-dialog"
         role="dialog"
         aria-modal="true"
         onClick={(event) => event.stopPropagation()}
       >
-        <div className="modal__header">
-          <h2 className="modal__title">{title}</h2>
-          <button className="modal__close" onClick={onClose} aria-label="Close">
+        <div className="modal__header" id="modal-header">
+          <h2 className="modal__title" id="modal-title">{title}</h2>
+          <button className="modal__close" id="modal-close-btn" onClick={onClose} aria-label="Close">
             ×
           </button>
         </div>
-        <div className="modal__body">{children}</div>
+        <div className="modal__body" id="modal-body">{children}</div>
       </div>
     </div>,
     document.body // render the whole thing into <body>.

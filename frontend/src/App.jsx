@@ -149,23 +149,25 @@ export default function App() {
   // ---- RENDER ------------------------------------------------------------
   // Everything below is JSX: the UI this component produces.
   return (
-    <div className="page">
-      <header className="page__header">
-        <h1>Student Registration</h1>
-        <p className="subtitle">Switch tabs to register a student or view the list.</p>
+    <div className="page" id="page-container">
+      <header className="page__header" id="page-header">
+        <h1 id="page-title">Student Registration</h1>
+        <p className="subtitle" id="page-subtitle">Switch tabs to register a student or view the list.</p>
       </header>
 
       {/* Tab bar. Each button updates `activeTab`. We add the "tab--active"
           class to whichever button matches the current tab so it's highlighted.
           The template literal `${...}` builds the className string conditionally. */}
-      <div className="tabs" role="tablist">
+      <div className="tabs" role="tablist" id="tab-bar">
         <button
+          id="tab-register"
           className={`tab ${activeTab === "register" ? "tab--active" : ""}`}
           onClick={() => setActiveTab("register")}
         >
           Register student
         </button>
         <button
+          id="tab-students"
           className={`tab ${activeTab === "students" ? "tab--active" : ""}`}
           onClick={() => setActiveTab("students")}
         >
@@ -175,7 +177,7 @@ export default function App() {
 
       {/* Conditional rendering: `&&` shows the element only when `message`
           is truthy (non-empty). Shown above the tab content either way. */}
-      {message && <p className="message">{message}</p>}
+      {message && <p className="message" id="status-message">{message}</p>}
 
       {/* Show only the active tab's content. The form on "register"; the table
           (or a loading line) on "students". */}
@@ -183,7 +185,7 @@ export default function App() {
         // Pass our handler DOWN to the form via a prop named `onAddStudent`.
         <StudentForm onAddStudent={handleAddStudent} />
       ) : loading ? (
-        <p>Loading students…</p>
+        <p id="students-loading">Loading students…</p>
       ) : (
         <StudentList
           students={students}        // data passed down as a prop

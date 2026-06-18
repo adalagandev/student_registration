@@ -123,25 +123,25 @@ export default function EditStudentModal({ student, onSave, onProgramChange, onC
   return (
     <Modal title={`Edit ${student.firstName} ${student.lastName}`} onClose={onClose}>
       {/* ---- Read-only identity ---- */}
-      <div className="readonly-grid">
-        <div>
-          <span className="readonly-grid__label">Name</span>
-          <span className="readonly-grid__value">
+      <div className="readonly-grid" id="edit-readonly-grid">
+        <div id="edit-readonly-name">
+          <span className="readonly-grid__label" id="edit-readonly-name-label">Name</span>
+          <span className="readonly-grid__value" id="edit-readonly-name-value">
             {student.firstName} {student.lastName}
           </span>
         </div>
-        <div>
-          <span className="readonly-grid__label">Current program</span>
-          <span className="pill">{student.program}</span>
+        <div id="edit-readonly-program">
+          <span className="readonly-grid__label" id="edit-readonly-program-label">Current program</span>
+          <span className="pill" id="edit-readonly-program-pill">{student.program}</span>
         </div>
       </div>
 
       {/* ---- Section 1: editable contact details ---- */}
-      <form className="form" onSubmit={handleSaveDetails}>
-        <h3 className="section-title">Contact details</h3>
+      <form className="form" id="edit-contact-form" onSubmit={handleSaveDetails}>
+        <h3 className="section-title" id="edit-contact-title">Contact details</h3>
 
-        <div className="form__row">
-          <label htmlFor="edit-email">Email</label>
+        <div className="form__row" id="edit-row-email">
+          <label htmlFor="edit-email" id="edit-label-email">Email</label>
           <input
             id="edit-email"
             type="email"
@@ -151,8 +151,8 @@ export default function EditStudentModal({ student, onSave, onProgramChange, onC
           />
         </div>
 
-        <div className="form__row">
-          <label htmlFor="edit-address">Address</label>
+        <div className="form__row" id="edit-row-address">
+          <label htmlFor="edit-address" id="edit-label-address">Address</label>
           <input
             id="edit-address"
             value={address}
@@ -161,8 +161,8 @@ export default function EditStudentModal({ student, onSave, onProgramChange, onC
           />
         </div>
 
-        <div className="form__row">
-          <label htmlFor="edit-phone">Phone</label>
+        <div className="form__row" id="edit-row-phone">
+          <label htmlFor="edit-phone" id="edit-label-phone">Phone</label>
           <input
             id="edit-phone"
             value={phone}
@@ -171,35 +171,41 @@ export default function EditStudentModal({ student, onSave, onProgramChange, onC
           />
         </div>
 
-        <button type="submit" className="btn btn--primary">
+        <button type="submit" className="btn btn--primary" id="edit-save-btn">
           Save changes
         </button>
       </form>
 
-      <hr className="divider" />
+      <hr className="divider" id="edit-divider-1" />
 
       {/* ---- Section 2: view supporting documents already on file ---- */}
-      <div className="form">
-        <h3 className="section-title">Supporting documents</h3>
+      <div className="form" id="edit-documents-section">
+        <h3 className="section-title" id="edit-documents-title">Supporting documents</h3>
         {documents.length === 0 ? (
-          <p className="hint">No documents uploaded yet.</p>
+          <p className="hint" id="edit-documents-empty">No documents uploaded yet.</p>
         ) : (
-          <ul className="doc-list">
+          <ul className="doc-list" id="edit-document-list">
             {documents.map((doc) => (
-              <li key={doc.id}>
+              <li key={doc.id} id={`edit-document-${doc.id}`}>
                 {/*
                   A normal link to the backend's file endpoint. target="_blank"
                   opens the PDF in a new browser tab; rel="noreferrer" is a small
                   security/privacy best-practice for external/new-tab links.
                 */}
-                <a href={documentUrl(student.id, doc.id)} target="_blank" rel="noreferrer">
+                <a
+                  id={`edit-document-link-${doc.id}`}
+                  href={documentUrl(student.id, doc.id)}
+                  target="_blank"
+                  rel="noreferrer"
+                >
                   {doc.name}
                 </a>
-                <span className="doc-list__meta">
-                  <span className="doc-list__date">{doc.uploadedAt}</span>
+                <span className="doc-list__meta" id={`edit-document-meta-${doc.id}`}>
+                  <span className="doc-list__date" id={`edit-document-date-${doc.id}`}>{doc.uploadedAt}</span>
                   {/* Destructive action: a delete button styled as danger. */}
                   <button
                     type="button"
+                    id={`edit-document-delete-btn-${doc.id}`}
                     className="btn btn--small btn--danger"
                     onClick={() => handleDeleteDocument(doc)}
                   >
@@ -212,18 +218,18 @@ export default function EditStudentModal({ student, onSave, onProgramChange, onC
         )}
       </div>
 
-      <hr className="divider" />
+      <hr className="divider" id="edit-divider-2" />
 
       {/* ---- Section 3: program change (gated behind PDF upload) ---- */}
-      <form className="form" onSubmit={handleSubmitProgram}>
-        <h3 className="section-title">Change program</h3>
-        <p className="hint">
+      <form className="form" id="edit-program-form" onSubmit={handleSubmitProgram}>
+        <h3 className="section-title" id="edit-program-title">Change program</h3>
+        <p className="hint" id="edit-program-hint">
           Changing a program requires {MIN_FILES}–{MAX_FILES} supporting PDF
           form(s), each 25 MB or less.
         </p>
 
-        <div className="form__row">
-          <label htmlFor="new-program">New program</label>
+        <div className="form__row" id="edit-row-new-program">
+          <label htmlFor="new-program" id="edit-label-new-program">New program</label>
           <input
             id="new-program"
             value={newProgram}
@@ -232,8 +238,8 @@ export default function EditStudentModal({ student, onSave, onProgramChange, onC
           />
         </div>
 
-        <div className="form__row">
-          <label htmlFor="program-forms">Supporting PDF form(s)</label>
+        <div className="form__row" id="edit-row-program-forms">
+          <label htmlFor="program-forms" id="edit-label-program-forms">Supporting PDF form(s)</label>
           {/* accept=".pdf" hints the file picker; multiple allows 1-2 files. */}
           <input
             id="program-forms"
@@ -246,9 +252,9 @@ export default function EditStudentModal({ student, onSave, onProgramChange, onC
 
         {/* Show the chosen file names so the user can confirm their selection. */}
         {files.length > 0 && (
-          <ul className="file-list">
+          <ul className="file-list" id="edit-file-list">
             {files.map((file) => (
-              <li key={file.name}>
+              <li key={file.name} id={`edit-file-${file.name}`}>
                 {file.name} — {(file.size / (1024 * 1024)).toFixed(1)} MB
               </li>
             ))}
@@ -256,9 +262,9 @@ export default function EditStudentModal({ student, onSave, onProgramChange, onC
         )}
 
         {/* Inline validation error (only shows when fileError is non-empty). */}
-        {fileError && <p className="error">{fileError}</p>}
+        {fileError && <p className="error" id="edit-file-error">{fileError}</p>}
 
-        <button type="submit" className="btn btn--primary">
+        <button type="submit" className="btn btn--primary" id="edit-program-submit-btn">
           Submit program change
         </button>
       </form>
