@@ -124,7 +124,7 @@ export default function StudentForm({ onAddStudent }) {
         />
       </div>
 
-      <button type="submit" className="btn btn--primary" id="register-submit-btn">
+      <button type="button" className="btn btn--primary" id="register-submit-btn">
         Register student
       </button>
     </form>
