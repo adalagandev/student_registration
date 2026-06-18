@@ -11,7 +11,7 @@ the behavior so it matches the **Expected** result.
 | Key | Summary | Component | Difficulty | Status |
 |------|---------|-----------|------------|--------|
 | SR-101 | "Register student" tab opens the wrong view | App | Easy | ✅ Fixed |
-| SR-102 | Phone column never shows a phone number | StudentList | Easy | 🔲 Open |
+| SR-102 | Phone column never shows a phone number | StudentList | Easy | ✅ Fixed |
 | SR-103 | "Register student" button does nothing on click | StudentForm | Medium | 🔲 Open |
 | SR-104 | Editing a student's email never saves | EditStudentModal | Medium | 🔲 Open |
 | SR-105 | Cannot attach 2 PDFs to a program change | EditStudentModal | Medium | 🔲 Open |
@@ -58,6 +58,9 @@ active.
 - **Component:** Frontend / Student table
 - **Element id:** `student-phone-<studentId>` (e.g. `student-phone-3`)
 - **File:** `frontend/src/components/StudentList.jsx`
+- **Status:** ✅ Fixed
+- **Fixed on branch:** `SR-102_Phone_column_shows_a_dash_for_students_who`
+- **Fixed at:** 2026-06-18 23:30:17 +0200
 
 **Description**
 In the students table, the **Phone** cell is backwards. Students who entered a
