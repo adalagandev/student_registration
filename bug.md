@@ -15,6 +15,7 @@ the behavior so it matches the **Expected** result.
 | SR-103 | "Register student" button does nothing on click | StudentForm | Medium | 🔲 Open |
 | SR-104 | Editing a student's email never saves | EditStudentModal | Medium | 🔲 Open |
 | SR-105 | Cannot attach 2 PDFs to a program change | EditStudentModal | Medium | 🔲 Open |
+| SR-106 | Migrate the backend to Java 17 (Spring Boot) | Backend | Large | 🔲 Open |
 
 ---
 
@@ -171,6 +172,32 @@ change can be submitted.
 
 **Hint:** An off-by-one in the file-count check (`validateFiles`). Compare the
 comparison operator against `MAX_FILES` with the intended inclusive limit.
+
+---
+
+## SR-106 — Migrate the backend to Java 17 (Spring Boot)
+
+- **Type:** Task / Migration
+- **Priority:** Medium
+- **Difficulty:** Large
+- **Component:** Backend
+- **Files:** new `backend-java/` project (Python `backend/` kept as reference)
+- **Status:** 🔲 Open
+
+**Description**
+Re-implement the existing Python/Flask REST API in Java 17+ using Spring Boot +
+Maven + Spring Data JPA, serving on the same `http://localhost:5000/api` so the
+React frontend keeps working with **no changes**. This is a faithful port: every
+route, status code, JSON field name, validation rule, timestamp format, and
+file-storage detail must match `backend/app.py`. The new project lives in
+`backend-java/` and reuses the existing `backend/students.db` and
+`backend/uploads/`. The Python backend is retained as a reference and retired in a
+later ticket.
+
+**Acceptance**
+All seven endpoints behave identically to Flask (see the migration plan), every
+error path returns `{"error": "..."}` JSON, and the frontend works end-to-end
+against the Java backend.
 
 ---
 
