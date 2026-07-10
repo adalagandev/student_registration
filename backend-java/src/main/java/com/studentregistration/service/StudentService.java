@@ -10,6 +10,7 @@ import com.studentregistration.repository.StudentRepository;
 import com.studentregistration.web.ApiException;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * StudentService — the business logic for creating, listing and updating students.
@@ -80,7 +81,11 @@ public class StudentService {
      * PUT /api/students/{id} — update editable contact fields only.
      * Email and address are required (non-empty); phone is optional. Name and
      * program are intentionally left untouched.
+     *
+     * <p>{@code @Transactional} wraps the find-then-save as one unit of work, keeping
+     * it consistent with the other multi-step service methods.
      */
+    @Transactional
     public StudentDto updateStudent(long studentId, UpdateStudentRequest req) {
         String email = trim(req.email());
         String address = trim(req.address());

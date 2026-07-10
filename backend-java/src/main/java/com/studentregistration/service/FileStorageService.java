@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.text.Normalizer;
+import java.util.Locale;
 import java.util.Set;
 
 import com.studentregistration.web.ApiException;
@@ -68,7 +69,13 @@ public class FileStorageService {
             Files.createDirectories(folder);
             Path target = folder.resolve(storedName);
             // Copy the bytes; REPLACE_EXISTING mirrors Flask's f.save() overwrite.
-            Files.copy(file.getInputStream(), target, StandardCopyOption.REPLACE_EXISTING);
+            // try-with-resources closes the upload stream even if the copy throws.
+            // NOTE: Files.copy(InputStream, ...) does NOT close the stream it reads,
+            // so without this the temp file / descriptor backing the MultipartFile
+            // would leak on every upload.
+            try (var in = file.getInputStream()) {
+                Files.copy(in, target, StandardCopyOption.REPLACE_EXISTING);
+            }
         } catch (IOException e) {
             // Wrap as unchecked so callers aren't forced to declare it; the global
             // handler will turn any leak into a 500.
@@ -141,7 +148,7 @@ public class FileStorageService {
 
         // 6. Guard Windows device names (we run on Windows).
         if (!joined.isEmpty()) {
-            String base = joined.split("\\.")[0].toUpperCase();
+            String base = joined.split("\\.")[0].toUpperCase(Locale.ROOT);
             if (WINDOWS_DEVICE_FILES.contains(base)) {
                 joined = "_" + joined;
             }

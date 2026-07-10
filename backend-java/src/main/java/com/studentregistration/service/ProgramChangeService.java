@@ -1,6 +1,7 @@
 package com.studentregistration.service;
 
 import java.util.List;
+import java.util.Locale;
 
 import com.studentregistration.dto.StudentDto;
 import com.studentregistration.entity.Document;
@@ -71,7 +72,7 @@ public class ProgramChangeService {
         //     doesn't leave the first one written to disk.
         for (MultipartFile f : files) {
             String name = f.getOriginalFilename();
-            boolean isPdfName = name != null && name.toLowerCase().endsWith(".pdf");
+            boolean isPdfName = name != null && name.toLowerCase(Locale.ROOT).endsWith(".pdf");
             boolean isPdfType = "application/pdf".equals(f.getContentType());
             if (!(isPdfName && isPdfType)) {
                 throw ApiException.badRequest("'" + name + "' is not a PDF.");
