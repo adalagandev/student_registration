@@ -1,0 +1,38 @@
+#!/bin/sh
+# commit-msg — hard backstop for the ticket-driven workflow (owned by the
+# ticket-warden agent, see .claude/agents/ticket-warden.md).
+#
+# Rejects any commit that is not tied to an SR-<number> ticket:
+#   1. no commits directly on main/master;
+#   2. the first line of the message must start with "SR-<number> ".
+#
+# Enable once per clone:  git config core.hooksPath .githooks
+#
+# Note: message validation must live in commit-msg (not pre-commit), because
+# pre-commit runs before the message exists.
+
+msg_file="$1"
+first_line=$(head -n 1 "$msg_file")
+branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+
+# Let merge/revert commits through — they carry their own message conventions.
+case "$first_line" in
+  "Merge "* | "Revert "*) exit 0 ;;
+esac
+
+# 1. Never commit straight to the trunk.
+if [ "$branch" = "main" ] || [ "$branch" = "master" ]; then
+  echo "x ticket-warden: refusing to commit directly on '$branch'." >&2
+  echo "  Create a ticket branch first, e.g.  git checkout -b SR-123-short-description" >&2
+  exit 1
+fi
+
+# 2. Message must be ticket-prefixed: SR-<number> followed by a space.
+if ! printf '%s' "$first_line" | grep -Eq '^SR-[0-9]+ '; then
+  echo "x ticket-warden: commit message must start with a ticket key." >&2
+  echo "  Expected:  SR-<number> <what changed>" >&2
+  echo "  Got:       $first_line" >&2
+  exit 1
+fi
+
+exit 0
