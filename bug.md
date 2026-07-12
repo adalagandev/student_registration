@@ -18,6 +18,7 @@ the behavior so it matches the **Expected** result.
 | SR-106 | Migrate the backend to Java 17 (Spring Boot) | Backend | Large | 🔲 Open |
 | SR-107 | Agent-driven development: route domain work to specialist agents | Tooling | Medium | 🔲 Open |
 | SR-108 | Add ticket-warden agent + commit-msg hook to enforce ticket workflow | Tooling | Medium | 🔲 Open |
+| SR-109 | Read-only waitlist tab (mock data from a text file) | Full-stack (frontend + backend-java) | Medium | 🔲 Open |
 
 ---
 
@@ -237,6 +238,27 @@ any commit whose message is not `SR-<n>`-prefixed, or that targets `main`/`maste
 **Acceptance**
 A commit with a non-`SR-<n>` message (or on `main`) is rejected by the hook; a
 `SR-<n> ...` message on a ticket branch passes.
+
+---
+
+## SR-109 — Read-only waitlist tab (mock data from a text file)
+
+- **Type:** Feature
+- **Priority:** Medium
+- **Component:** Full-stack (frontend + backend-java)
+- **Status:** 🔲 Open
+
+**Description**
+Add a read-only **Waitlist** tab showing ~7 mock waitlisted students (fields:
+name, email, program, date added). The Java backend reads the mock data from a
+bundled text file at the service layer and serves it at `GET /api/waitlist`. The
+React frontend adds a third, read-only tab that mirrors the existing
+`StudentList` table (no add/edit/delete controls).
+
+**Acceptance**
+`GET /api/waitlist` returns 7 entries with `{name, email, program, dateAdded}`;
+the UI shows a read-only Waitlist tab (no add/edit/delete); the existing Register
+and Registered-students tabs are unaffected.
 
 ---
 
