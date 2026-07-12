@@ -64,6 +64,27 @@ The frontend expects the backend running on port 5000 (hardcoded in `frontend/sr
 - **Stable, descriptive `id` attributes** are present on essentially every rendered element (e.g. `tab-register`, `student-row-{id}`, `edit-program-submit-btn`), used as handles to target elements in later requests. When adding markup, give it an id following the existing `block-element` / interpolated-`{id}` naming so the set stays complete and unique.
 - Theme is driven by CSS custom properties in `frontend/src/styles.css` (`:root` tokens + layered `--surface`/`--surface-2`/`--surface-3`). Re-theme by changing tokens rather than scattering colors.
    
+## Agent-driven development
+
+Feature and change work is delegated to the specialist subagent that owns the domain — that agent **writes** the code; the main agent coordinates and handles code outside these domains:
+
+- Service / business-logic classes (`service/`, use-cases, DI, transactions, DTO/domain mapping) → **service-architect**
+- API error/exception handling, status-code mapping, validation errors → **exception-warden**
+- Unit and integration tests → **test-guardian**
+
+A feature that spans domains is split so each agent authors its own layer. Invoke these agents proactively when a prompt lands in their domain — not only for after-the-fact review.
+
+### Authorship stamp
+
+Every class or function an agent authors or substantially rewrites carries an authorship tag on the line directly above its declaration, using the file's line-comment syntax:
+
+```
+// @agent: service-architect      (Java / JS)
+# @agent: exception-warden        (Python)
+```
+
+Keep the tag on edits; change it only when a different agent takes the code over. See `docs/agent-driven-development.md` for rationale and setup details.
+
 ## Branch & commit workflow
 
 All work is ticket-driven. Follow this flow for every change:
