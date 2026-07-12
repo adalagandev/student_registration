@@ -128,6 +128,36 @@ that language:
   hardcoded time, non-injected dependency), flag it for service-architect
   rather than working around it with patching.
 
+## API curl commands (all endpoints — old and new)
+
+Whenever your work touches an HTTP API (you add/change tests for an endpoint, or a
+new endpoint ships), ALSO write and maintain a companion set of runnable **curl
+commands covering EVERY API endpoint — the ones you just tested AND all pre-existing
+ones**. Automated tests prove behavior in CI; these curls give a human a fast,
+copy-paste way to exercise the live server.
+
+- **Where:** a single Markdown file at `docs/api-curl-commands.md` (create it if it
+  doesn't exist). Group commands by resource, one fenced `bash` block per command.
+- **Completeness is the point:** the file MUST list every endpoint the API currently
+  exposes, not only the ones in your current change. Before finishing, enumerate the
+  actual routes (Grep the controllers / route definitions — e.g.
+  `@GetMapping`/`@PostMapping`/`@RequestMapping` in `backend-java/.../web`, or the
+  Flask `@app.route` decorators) and reconcile the file against them: add any missing
+  endpoint, update any that changed, and NEVER delete a command for an endpoint that
+  still exists.
+- **Each command includes:** the HTTP method + path, a one-line comment saying what
+  it does and the expected status code, and a realistic example — JSON body for
+  POST/PUT (`-H "Content-Type: application/json" -d '{...}'`), `-F` file parts for
+  multipart uploads. Use the base URL `http://localhost:5000/api`.
+- **Cover the verbs, not just GETs:** GET, POST, PUT, DELETE, and multipart uploads.
+  For an endpoint with an important error contract, add a second curl showing the
+  representative failure (e.g. a 400/404 with its `{"error": ...}` body).
+- **Additive updates:** when a new endpoint lands, append its curl(s); when one
+  changes, edit it in place. Keep the file readable and grouped.
+- Put a short note at the top of the file that it is generated/maintained by the
+  `test-guardian` agent, and keep commits to it prefixed with the active `SR-<n>`
+  ticket like any other change.
+
 ## Authorship stamp
 
 When you author or substantially rewrite a test class or test method, stamp it

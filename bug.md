@@ -19,6 +19,7 @@ the behavior so it matches the **Expected** result.
 | SR-107 | Agent-driven development: route domain work to specialist agents | Tooling | Medium | 🔲 Open |
 | SR-108 | Add ticket-warden agent + commit-msg hook to enforce ticket workflow | Tooling | Medium | 🔲 Open |
 | SR-109 | Read-only waitlist tab (mock data from a text file) | Full-stack (frontend + backend-java) | Medium | ✅ Done |
+| SR-110 | Maintain API curl-command reference (test-guardian) + generate initial doc | Repo tooling | Low | ✅ Done |
 
 ---
 
@@ -261,6 +262,27 @@ React frontend adds a third, read-only tab that mirrors the existing
 `GET /api/waitlist` returns 7 entries with `{name, email, program, dateAdded}`;
 the UI shows a read-only Waitlist tab (no add/edit/delete); the existing Register
 and Registered-students tabs are unaffected.
+
+---
+
+## SR-110 — Maintain API curl-command reference (test-guardian) + generate initial doc
+
+- **Type:** Task / Tooling
+- **Priority:** Low
+- **Component:** Repo tooling (`.claude/agents/`, `docs/`)
+- **Status:** ✅ Done
+- **Fixed on branch:** `SR-110-api-curl-docs`
+- **Fixed at:** 2026-07-12 23:15:29 +0200
+
+**Description**
+The `test-guardian` agent now maintains a runnable curl-command reference
+covering EVERY API endpoint (old and new) in `docs/api-curl-commands.md`.
+Generate the initial version covering the current 8 endpoints (students CRUD +
+program-change, documents list/view/delete, waitlist).
+
+**Acceptance**
+`docs/api-curl-commands.md` exists with a curl command per current endpoint; the
+test-guardian agent instructs maintaining it going forward.
 
 ---
 
