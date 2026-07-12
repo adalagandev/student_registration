@@ -7,25 +7,27 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 A small full-stack student-registration app whose real purpose is to **refresh React skills**. The code is intentionally written as study material — see `frontend/src/App.jsx`, which opens with a React keyword/syntax glossary. This shapes how you should edit it (see Conventions).
 
 - **Frontend:** React 18 + Vite, plain JavaScript (no TypeScript).
-- **Backend:** Python + Flask + SQLite (single-file DB), no ORM. **Being migrated to Java** (SR-106): a Spring Boot + JPA port lives in `backend-java/` and serves the identical API on port 5000. The Python `backend/` is retained as reference until Java parity is fully signed off; both read the same `backend/students.db` and `backend/uploads/`, so run only ONE backend at a time.
+- **Backend (active):** Java 17 + Spring Boot + Spring Data JPA + SQLite, in `backend-java/`. **This is the backend to use going forward** — new backend work happens here. It serves the API on port 5000.
+- **Backend (legacy reference):** the original Python + Flask + SQLite app in `backend/` (single file, no ORM). The Java backend (SR-106) is a faithful 1:1 port of it; `backend/` is kept only as a reference and is no longer the default. Both read the same `backend/students.db` and `backend/uploads/`, so run only ONE at a time — default to Java.
 
 ## Commands
 
 Two processes, run in separate terminals from their own directories.
 
-**Backend — Python** (from `backend/`):
+**Backend — Java (primary)** (from `backend-java/`, needs JDK 17+ and Maven):
+```powershell
+mvn spring-boot:run              # serves http://localhost:5000 (working dir is backend-java/)
+mvn -q -DskipTests package       # build a runnable fat jar into target/
+mvn test                         # run the JUnit + MockMvc API-parity suite
+```
+
+**Backend — Python (legacy reference, optional)** (from `backend/`):
 ```powershell
 python -m venv venv ; venv\Scripts\Activate.ps1   # optional, first time
 pip install -r requirements.txt
 python app.py        # serves http://localhost:5000, debug auto-reload on
 ```
-
-**Backend — Java** (from `backend-java/`, needs JDK 17+ and Maven):
-```powershell
-mvn spring-boot:run              # serves http://localhost:5000 (working dir is backend-java/)
-mvn -q -DskipTests package       # build a runnable fat jar into target/
-```
-Run either the Python OR the Java backend, not both — they share port 5000 and the same `backend/students.db` + `backend/uploads/`. Reusing the DB is why `mvn spring-boot:run` (which uses `backend-java/` as its working directory) resolves the `../backend/students.db` path in `application.properties`.
+Run either the Java OR the Python backend, not both — they share port 5000 and the same `backend/students.db` + `backend/uploads/`. **Default to Java.** `mvn spring-boot:run` uses `backend-java/` as its working directory, which is why `application.properties` resolves the DB at `../backend/students.db`.
 
 **Frontend** (from `frontend/`):
 ```powershell
@@ -39,18 +41,17 @@ The frontend expects the backend running on port 5000 (hardcoded in `frontend/sr
 
 ## Architecture
 
-**Backend (`backend/app.py`) — a single file holds everything:**
-- One Flask module with all routes under `/api/...`. SQLite lives in `backend/students.db`, created on startup. A fresh `sqlite3` connection is opened per request (`get_connection`).
-- `init_db()` runs on startup and is also the **schema migration path**: it `CREATE TABLE IF NOT EXISTS` and then inspects `PRAGMA table_info` to `ALTER TABLE ... ADD COLUMN` for columns added later (`phone`, `registered_at`, `original_name`). Add new columns this same way, not with a migration tool.
-- **Field-name boundary:** the DB uses snake_case; the API exposes camelCase. `row_to_dict()` is the single conversion point — any new student field must be added there and to the SQL.
-- Two tables: `students` and `documents` (uploaded program-change PDFs, FK to student). Uploaded files are stored on disk at `backend/uploads/<student_id>/`, timestamp-prefixed via `secure_filename`; the `documents` row records both the stored name and the original display name.
-- **Server is the source of truth for validation and for `registered_at`** — never trust client-supplied values. Program changes are gated: `/api/students/<id>/program-change` requires `multipart/form-data` with 1–2 PDFs (≤25 MB each); these limits are duplicated in the frontend for instant feedback but re-checked here.
-
-**Backend (`backend-java/`) — Spring Boot port (SR-106), a faithful re-implementation of the Flask API:**
+**Backend (`backend-java/`) — Spring Boot, the active backend (SR-106):**
 - Layered, not single-file: `web/` controllers (thin) → `service/` (all business logic + validation) → `repository/` (Spring Data JPA) → `entity/` (`@Entity` mapped to the existing snake_case columns via `@Column(name=...)`). `dto/` holds the wire shapes; `StudentDto.from()` is the camelCase boundary (the `row_to_dict()` equivalent).
-- **Schema migration** is Hibernate `ddl-auto=update` (in `application.properties`), replacing the Flask `PRAGMA table_info` + `ALTER TABLE` path. It creates/adds missing tables/columns and leaves existing data untouched.
-- **All errors go through `web/GlobalExceptionHandler`**, which emits exactly `{"error": "<msg>"}` — the frontend calls `response.json()` unconditionally and reads `error`, so no error path may return non-JSON. Services throw `web/ApiException(status, msg)` carrying the exact Flask status + message.
-- Fidelity details that are easy to break live in `service/`: `Timestamps.nowUtcSeconds()` (UTC, seconds, no `Z`), `FileStorageService.secureFilename()` (werkzeug port) + timestamp-prefixed stored name, and `ProgramChangeService`'s validation ORDER (program/file checks return 400 **before** the student-existence 404). The per-file 25 MB check is done in app code (400), so multipart `max-file-size` is deliberately left at 55 MB — see the note in `application.properties`.
+- SQLite lives in `backend/students.db`; uploaded PDFs in `backend/uploads/<student_id>/` (paths from `application.properties`). Two tables: `students` and `documents` (FK to student). The `documents` row records both the stored on-disk name and the original display name.
+- **Schema migration** is Hibernate `ddl-auto=update` (in `application.properties`), which creates/adds missing tables/columns and leaves existing data untouched. Add a new student field to the `Student` entity + `StudentDto` (the camelCase boundary) — Hibernate adds the column.
+- **All errors go through `web/GlobalExceptionHandler`**, which emits exactly `{"error": "<msg>"}` — the frontend calls `response.json()` unconditionally and reads `error`, so no error path may return non-JSON. Services throw `web/ApiException(status, msg)`.
+- **Server is the source of truth for validation and `registeredAt`** — never trust client-supplied values. Program changes are gated: `/api/students/<id>/program-change` requires `multipart/form-data` with 1–2 PDFs (≤25 MB each). Fidelity details that are easy to break live in `service/`: `Timestamps.nowUtcSeconds()` (UTC, seconds, no `Z`), `FileStorageService.secureFilename()` (werkzeug port) + timestamp-prefixed stored name, and `ProgramChangeService`'s validation ORDER (program/file checks return 400 **before** the student-existence 404). The per-file 25 MB check is done in app code (400), so multipart `max-file-size` is deliberately left at 55 MB.
+- The JUnit + MockMvc suite in `src/test/java/` locks in the API contract; run `mvn test`.
+
+**Backend (`backend/app.py`) — legacy Flask reference (no longer the default):**
+- The original single-file Flask app the Java backend was ported from. Keep it working for reference/comparison, but do new backend work in `backend-java/`.
+- One Flask module with all routes under `/api/...`; a fresh `sqlite3` connection per request (`get_connection`). `init_db()` is the schema path (`CREATE TABLE IF NOT EXISTS` + `PRAGMA table_info` → `ALTER TABLE ... ADD COLUMN`). `row_to_dict()` is the snake_case→camelCase conversion point. Behavior is mirrored 1:1 by the Java backend above.
 
 **Frontend (`frontend/src/`):**
 - `api.js` is the **only** place that talks to the backend — all `fetch` calls live there. Components never call `fetch` directly; add a new function here when adding an endpoint.
