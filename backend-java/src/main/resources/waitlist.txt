@@ -1,0 +1,10 @@
+# Mock waitlist data — read at runtime by WaitlistService.
+# One entry per line, pipe-delimited:  name | email | program | dateAdded (YYYY-MM-DD)
+# Blank lines and lines starting with '#' are ignored. Fields are trimmed.
+Ada Lovelace     | ada.lovelace@example.com    | Computer Science      | 2026-05-02
+Alan Turing      | alan.turing@example.com     | Mathematics           | 2026-05-04
+Grace Hopper     | grace.hopper@example.com    | Software Engineering  | 2026-05-06
+Katherine Johnson| katherine.j@example.com     | Applied Mathematics   | 2026-05-09
+Linus Torvalds   | linus.t@example.com         | Computer Science      | 2026-05-11
+Radia Perlman    | radia.perlman@example.com   | Network Engineering   | 2026-05-15
+Barbara Liskov   | barbara.liskov@example.com  | Computer Science      | 2026-05-18
