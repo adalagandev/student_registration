@@ -16,6 +16,8 @@ the behavior so it matches the **Expected** result.
 | SR-104 | Editing a student's email never saves | EditStudentModal | Medium | 🔲 Open |
 | SR-105 | Cannot attach 2 PDFs to a program change | EditStudentModal | Medium | 🔲 Open |
 | SR-106 | Migrate the backend to Java 17 (Spring Boot) | Backend | Large | 🔲 Open |
+| SR-107 | Agent-driven development: route domain work to specialist agents | Tooling | Medium | 🔲 Open |
+| SR-108 | Add ticket-warden agent + commit-msg hook to enforce ticket workflow | Tooling | Medium | 🔲 Open |
 
 ---
 
@@ -198,6 +200,43 @@ later ticket.
 All seven endpoints behave identically to Flask (see the migration plan), every
 error path returns `{"error": "..."}` JSON, and the frontend works end-to-end
 against the Java backend.
+
+---
+
+## SR-107 — Agent-driven development: route domain work to specialist agents
+
+- **Type:** Task / Tooling
+- **Priority:** Medium
+- **Component:** Repo tooling (`.claude/agents/`, `CLAUDE.md`)
+- **Status:** 🔲 Open
+
+**Description**
+Make the specialist subagents the authors of their domains: `service-architect`
+(service/business logic), `exception-warden` (error handling), `test-guardian`
+(tests). Added a delegation policy + `// @agent: <name>` authorship-stamp
+convention to `CLAUDE.md`, reworded each agent's description to lead with
+authoring, and documented it in `docs/agent-driven-development.md`.
+
+---
+
+## SR-108 — Add ticket-warden agent + commit-msg hook to enforce ticket workflow
+
+- **Type:** Task / Tooling
+- **Priority:** Medium
+- **Component:** Repo tooling (`.claude/agents/`, `.githooks/`, `CLAUDE.md`)
+- **Status:** 🔲 Open
+
+**Description**
+Introduce a `ticket-warden` agent (an "agentic product owner") that runs at the
+start of any code-change request to ensure the change is tied to an `SR-<n>`
+ticket and a matching branch, and that commits are ticket-prefixed. Move the
+detailed branch/commit workflow out of `CLAUDE.md` (leaving a one-line pointer)
+into the agent. Add a `.githooks/commit-msg` hook as a hard backstop that rejects
+any commit whose message is not `SR-<n>`-prefixed, or that targets `main`/`master`.
+
+**Acceptance**
+A commit with a non-`SR-<n>` message (or on `main`) is rejected by the hook; a
+`SR-<n> ...` message on a ticket branch passes.
 
 ---
 

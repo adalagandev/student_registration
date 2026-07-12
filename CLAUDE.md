@@ -88,16 +88,10 @@ Keep the tag on edits; change it only when a different agent takes the code over
 
 ## Branch & commit workflow
 
-All work is ticket-driven. Follow this flow for every change:
-
-1. **Every code change must be associated with a ticket.** No commits without a ticket number. If a change doesn't have a ticket yet, create one (e.g. in `bug.md` or your tracker) before writing code. Tickets use the `SR-<number>` key (see `bug.md`).
-2. **Branch per ticket.** Create a branch off `main` named with the ticket number prefix followed by a short, kebab-case description of the ticket:
-   ```
-   git checkout -b SR-104-fix-email-save
-   ```
-   Format: `SR-<number>-<short-description>`.
-3. **Commit messages are ticket-prefixed.** Every commit message starts with the ticket number, followed by an appropriate message:
-   ```
-   git commit -m "SR-104 persist edited email in save handler"
-   ```
-   Format: `SR-<number> <what the commit does>`.
+All work is ticket-driven (`SR-<number>` keys in `bug.md`): every code change is
+tied to a ticket, made on a `SR-<n>-<short-desc>` branch off `main`, and committed
+with an `SR-<n> ...` message. **This workflow is owned and enforced by the
+`ticket-warden` agent** (`.claude/agents/ticket-warden.md`) — invoke it before any
+code change to create/assign the ticket and branch. A `.githooks/commit-msg` hook
+is the hard backstop that rejects non-`SR-<n>` commits (enable once per clone with
+`git config core.hooksPath .githooks`).
