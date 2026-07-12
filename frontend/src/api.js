@@ -27,6 +27,18 @@ export async function getStudents() {
 }
 
 /**
+ * Fetch the read-only waitlist from the backend.
+ * Returns: a Promise that resolves to an array of { name, email, program, dateAdded }.
+ */
+export async function getWaitlist() {
+  const response = await fetch(`${BASE_URL}/waitlist`); // GET is the default method.
+  if (!response.ok) {
+    throw new Error("Failed to load waitlist.");
+  }
+  return response.json();
+}
+
+/**
  * Create a new student.
  * @param {object} student - { firstName, lastName, email, program, address }
  * Returns: a Promise resolving to the newly created student (with its id).

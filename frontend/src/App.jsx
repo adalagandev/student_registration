@@ -44,12 +44,13 @@
 // Import the Hooks we need from React.
 import { useState, useEffect } from "react";
 
-// Import the API functions that talk to the Python backend.
-import { getStudents, createStudent, updateStudent, submitProgramChange } from "./api.js";
+// Import the API functions that talk to the backend.
+import { getStudents, getWaitlist, createStudent, updateStudent, submitProgramChange } from "./api.js";
 
 // Import our child components.
 import StudentForm from "./components/StudentForm.jsx";
 import StudentList from "./components/StudentList.jsx";
+import WaitlistList from "./components/WaitlistList.jsx";
 import EditStudentModal from "./components/EditStudentModal.jsx";
 
 // The App component. `export default` makes it importable from other files
@@ -70,16 +71,23 @@ export default function App() {
   // the modal is closed. When it holds a student object, the modal is open.
   const [editingStudent, setEditingStudent] = useState(null);
 
-  // Which tab is currently shown. "register" = the form, "students" = the table.
-  // Using state for this is "conditional rendering": the value decides which
-  // component we draw, and clicking a tab just updates the value.
+  // Which tab is currently shown. "register" = the form, "students" = the table,
+  // "waitlist" = the read-only waitlist. Using state for this is "conditional
+  // rendering": the value decides which component we draw, and clicking a tab
+  // just updates the value.
   const [activeTab, setActiveTab] = useState("register");
+
+  // The read-only waitlist (mock data served by the backend at /api/waitlist),
+  // plus its own loading flag so it loads independently of the student list.
+  const [waitlist, setWaitlist] = useState([]);
+  const [waitlistLoading, setWaitlistLoading] = useState(true);
 
   // ---- LOAD DATA ON FIRST RENDER ----------------------------------------
   // useEffect with an empty dependency array [] runs exactly once, right after
   // the component first appears. We use it to fetch the initial student list.
   useEffect(() => {
     refreshStudents();
+    refreshWaitlist();
   }, []); // <-- empty [] = "only on mount" (the first render).
 
   // Helper that (re)loads students from the backend and stores them in state.
@@ -93,6 +101,20 @@ export default function App() {
       setMessage(error.message);        // show any error to the user
     } finally {
       setLoading(false);                // always stop the loading indicator
+    }
+  }
+
+  // Same pattern for the waitlist: fetch it once and store it in state. Uses its
+  // own loading flag so it never interferes with the student-list loading.
+  async function refreshWaitlist() {
+    try {
+      setWaitlistLoading(true);
+      const data = await getWaitlist();
+      setWaitlist(data);
+    } catch (error) {
+      setMessage(error.message);
+    } finally {
+      setWaitlistLoading(false);
     }
   }
 
@@ -173,25 +195,41 @@ export default function App() {
         >
           Registered students ({students.length})
         </button>
+        <button
+          id="tab-waitlist"
+          className={`tab ${activeTab === "waitlist" ? "tab--active" : ""}`}
+          onClick={() => setActiveTab("waitlist")}
+        >
+          Waitlist ({waitlist.length})
+        </button>
       </div>
 
       {/* Conditional rendering: `&&` shows the element only when `message`
           is truthy (non-empty). Shown above the tab content either way. */}
       {message && <p className="message" id="status-message">{message}</p>}
 
-      {/* Show only the active tab's content. The form on "register"; the table
-          (or a loading line) on "students". */}
-      {activeTab === "register" ? (
+      {/* Show only the active tab's content. Each tab is an independent `&&`
+          guard so a third (read-only) tab slots in without nested ternaries.
+          The "students" and "waitlist" tabs each show a loading line first. */}
+      {activeTab === "register" && (
         // Pass our handler DOWN to the form via a prop named `onAddStudent`.
         <StudentForm onAddStudent={handleAddStudent} />
-      ) : loading ? (
-        <p id="students-loading">Loading students…</p>
-      ) : (
-        <StudentList
-          students={students}        // data passed down as a prop
-          onEdit={setEditingStudent} // clicking "Edit" stores that student -> opens modal
-        />
       )}
+      {activeTab === "students" &&
+        (loading ? (
+          <p id="students-loading">Loading students…</p>
+        ) : (
+          <StudentList
+            students={students}        // data passed down as a prop
+            onEdit={setEditingStudent} // clicking "Edit" stores that student -> opens modal
+          />
+        ))}
+      {activeTab === "waitlist" &&
+        (waitlistLoading ? (
+          <p id="waitlist-loading">Loading waitlist…</p>
+        ) : (
+          <WaitlistList waitlist={waitlist} /> // read-only: no callbacks passed down
+        ))}
 
       {/* Render the modal only when a student is selected for editing.
           `&&` means: if editingStudent is truthy, render the element after it. */}
