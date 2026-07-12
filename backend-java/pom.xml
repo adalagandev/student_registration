@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  pom.xml — Maven's "Project Object Model". This single XML file is Maven's
+  equivalent of the Python backend's requirements.txt PLUS its run configuration:
+  it declares what the project is called, which Java version to compile against,
+  and every third-party library ("dependency") we pull in. `mvn` reads this file
+  to download dependencies, compile the code, run it, and package a runnable jar.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!--
+      "Parent" inheritance. spring-boot-starter-parent gives us a curated,
+      version-tested set of dependency versions (a "BOM"), sensible compiler
+      defaults, and the spring-boot Maven plugin. We only pick versions for the
+      few libraries Spring Boot does NOT manage itself (the SQLite ones below).
+    -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.3.5</version>
+        <relativePath/> <!-- look the parent up from the Maven repository, not a local path -->
+    </parent>
+
+    <!-- Coordinates that uniquely identify THIS project in a Maven repository. -->
+    <groupId>com.studentregistration</groupId>
+    <artifactId>student-registration-backend</artifactId>
+    <version>1.0.0</version>
+    <name>student-registration-backend</name>
+    <description>Java (Spring Boot) port of the Flask student-registration API</description>
+
+    <properties>
+        <!-- Compile for Java 17 (the project's stated minimum). Java 18 runs it fine. -->
+        <java.version>17</java.version>
+        <!--
+          Pin the community SQLite dialect to the SAME Hibernate version Spring Boot
+          3.3.5 ships (6.5.3.Final). Mismatched Hibernate artifacts cause obscure
+          runtime errors, so we tie them together explicitly.
+        -->
+        <hibernate.version>6.5.3.Final</hibernate.version>
+    </properties>
+
+    <dependencies>
+        <!--
+          spring-boot-starter-web: the REST layer. Pulls in Spring MVC (@RestController,
+          @RequestMapping, multipart handling) and an embedded Tomcat server, so the app
+          runs as a plain `java -jar` with no external servlet container — the direct
+          analogue of Flask's built-in dev server.
+        -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!--
+          spring-boot-starter-data-jpa: JPA/Hibernate ORM + Spring Data repositories.
+          This replaces the hand-written sqlite3 SQL in app.py with entity classes and
+          repository interfaces. Also brings a HikariCP connection pool.
+        -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <!--
+          The JDBC driver that actually talks to a .sqlite file. Spring Boot does not
+          manage this library's version, so we pick one explicitly.
+        -->
+        <dependency>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+            <version>3.47.0.0</version>
+        </dependency>
+
+        <!--
+          Hibernate ships its SQLite dialect in a separate "community dialects" jar
+          (SQLite is not a Hibernate-core-supported database). The dialect teaches
+          Hibernate how to generate SQLite-flavoured SQL (e.g. AUTOINCREMENT ids).
+        -->
+        <dependency>
+            <groupId>org.hibernate.orm</groupId>
+            <artifactId>hibernate-community-dialects</artifactId>
+            <version>${hibernate.version}</version>
+        </dependency>
+
+        <!-- Test scaffolding (JUnit 5, Spring test, MockMvc). Optional to use. -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!--
+              The Spring Boot Maven plugin: enables `mvn spring-boot:run` (run in place)
+              and repackages `mvn package` output into a single self-contained runnable jar.
+            -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>
