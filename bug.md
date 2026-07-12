@@ -18,7 +18,7 @@ the behavior so it matches the **Expected** result.
 | SR-106 | Migrate the backend to Java 17 (Spring Boot) | Backend | Large | 🔲 Open |
 | SR-107 | Agent-driven development: route domain work to specialist agents | Tooling | Medium | 🔲 Open |
 | SR-108 | Add ticket-warden agent + commit-msg hook to enforce ticket workflow | Tooling | Medium | 🔲 Open |
-| SR-109 | Read-only waitlist tab (mock data from a text file) | Full-stack (frontend + backend-java) | Medium | 🔲 Open |
+| SR-109 | Read-only waitlist tab (mock data from a text file) | Full-stack (frontend + backend-java) | Medium | ✅ Done |
 
 ---
 
@@ -246,7 +246,9 @@ A commit with a non-`SR-<n>` message (or on `main`) is rejected by the hook; a
 - **Type:** Feature
 - **Priority:** Medium
 - **Component:** Full-stack (frontend + backend-java)
-- **Status:** 🔲 Open
+- **Status:** ✅ Done
+- **Fixed on branch:** `SR-109-waitlist-tab`
+- **Fixed at:** 2026-07-12 23:05:26 +0200
 
 **Description**
 Add a read-only **Waitlist** tab showing ~7 mock waitlisted students (fields:
