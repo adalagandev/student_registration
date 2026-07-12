@@ -19,7 +19,7 @@ the behavior so it matches the **Expected** result.
 | SR-107 | Agent-driven development: route domain work to specialist agents | Tooling | Medium | 🔲 Open |
 | SR-108 | Add ticket-warden agent + commit-msg hook to enforce ticket workflow | Tooling | Medium | 🔲 Open |
 | SR-109 | Read-only waitlist tab (mock data from a text file) | Full-stack (frontend + backend-java) | Medium | ✅ Done |
-| SR-110 | Maintain API curl-command reference (test-guardian) + generate initial doc | Repo tooling | Low | 🔲 Open |
+| SR-110 | Maintain API curl-command reference (test-guardian) + generate initial doc | Repo tooling | Low | ✅ Done |
 
 ---
 
@@ -270,7 +270,9 @@ and Registered-students tabs are unaffected.
 - **Type:** Task / Tooling
 - **Priority:** Low
 - **Component:** Repo tooling (`.claude/agents/`, `docs/`)
-- **Status:** 🔲 Open
+- **Status:** ✅ Done
+- **Fixed on branch:** `SR-110-api-curl-docs`
+- **Fixed at:** 2026-07-12 23:15:29 +0200
 
 **Description**
 The `test-guardian` agent now maintains a runnable curl-command reference
