@@ -207,3 +207,24 @@ Read-only; there are no create/update/delete verbs on this resource.
 # List waitlist entries -> 200, JSON array of {name, email, program, dateAdded}
 curl -i http://localhost:5000/api/waitlist
 ```
+
+---
+
+## Cross-cutting error responses
+
+These are not endpoints of their own — they are the global error contract
+`GlobalExceptionHandler` guarantees for **any** request, verified by
+`ErrorShapeApiTest` / `InternalErrorMaskingApiTest` (SR-111).
+
+```bash
+# Any URL no controller matches -> 404 in our error shape (not Spring's default page)
+curl -i http://localhost:5000/api/bogus
+# Body: {"error":"Not found."}
+```
+
+```bash
+# An unforeseen server-side failure -> 500 with a FIXED, generic body; the raw
+# exception message is never echoed (no SQL / paths / class names leak to clients).
+# (Not triggerable on purpose via the API — shown here for the expected shape.)
+# Body: {"error":"Internal server error."}
+```
