@@ -20,6 +20,7 @@ the behavior so it matches the **Expected** result.
 | SR-108 | Add ticket-warden agent + commit-msg hook to enforce ticket workflow | Tooling | Medium | 🔲 Open |
 | SR-109 | Read-only waitlist tab (mock data from a text file) | Full-stack (frontend + backend-java) | Medium | ✅ Done |
 | SR-110 | Maintain API curl-command reference (test-guardian) + generate initial doc | Repo tooling | Low | ✅ Done |
+| SR-111 | Harden global exception handler: mask 500 messages + log, and 404 for unknown routes | Backend | Medium | ✅ Fixed |
 
 ---
 
@@ -283,6 +284,43 @@ program-change, documents list/view/delete, waitlist).
 **Acceptance**
 `docs/api-curl-commands.md` exists with a curl command per current endpoint; the
 test-guardian agent instructs maintaining it going forward.
+
+---
+
+## SR-111 — Harden global exception handler: mask 500 messages + log, and 404 for unknown routes
+
+- **Type:** Bug
+- **Priority:** High
+- **Difficulty:** Medium
+- **Component:** Backend / `web/GlobalExceptionHandler`
+- **File:** `backend-java/src/main/java/com/studentregistration/web/GlobalExceptionHandler.java`
+- **Status:** ✅ Fixed
+- **Fixed on branch:** `SR-111-harden-global-exception-handler`
+- **Fixed at:** 2026-07-13 20:52:00 +0200
+
+**Description**
+Two related defects in the Java backend's global exception handler, both
+parity-safe and preserving the `{"error":"<msg>"}` shape the frontend reads
+unconditionally via `response.json()`:
+
+- **#1 (High):** The catch-all `@ExceptionHandler(Exception.class)` returns
+  `ex.getMessage()` on HTTP 500, leaking internal exception messages (SQLite /
+  Hibernate internals, wrapped I/O messages) to clients, and nothing is logged
+  anywhere so 500s are invisible to operators. Log the exception with full stack
+  trace at ERROR level and return a fixed generic body
+  `{"error":"Internal server error."}`. (Flask ran `debug=True`, so echoing the
+  raw message carried no parity value.)
+- **#2 (Medium):** No handler exists for unmatched routes. On Spring Boot 3.3.5 an
+  unknown path raises `NoResourceFoundException`, falls through to the catch-all,
+  and returns HTTP 500 with a body like `{"error":"No static resource api/bogus."}`.
+  Add `@ExceptionHandler({NoResourceFoundException.class, NoHandlerFoundException.class})`
+  returning 404 with `{"error":"Not found."}`.
+
+**Acceptance**
+An unhandled server error returns HTTP 500 with body `{"error":"Internal server
+error."}` and is logged at ERROR level with a stack trace; a request to an unknown
+route returns HTTP 404 with body `{"error":"Not found."}`; the `{"error":"<msg>"}`
+shape is preserved throughout.
 
 ---
 
