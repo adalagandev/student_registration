@@ -15,9 +15,9 @@ the behavior so it matches the **Expected** result.
 | SR-103 | "Register student" button does nothing on click | StudentForm | Medium | 🔲 Open |
 | SR-104 | Editing a student's email never saves | EditStudentModal | Medium | 🔲 Open |
 | SR-105 | Cannot attach 2 PDFs to a program change | EditStudentModal | Medium | 🔲 Open |
-| SR-106 | Migrate the backend to Java 17 (Spring Boot) | Backend | Large | 🔲 Open |
-| SR-107 | Agent-driven development: route domain work to specialist agents | Tooling | Medium | 🔲 Open |
-| SR-108 | Add ticket-warden agent + commit-msg hook to enforce ticket workflow | Tooling | Medium | 🔲 Open |
+| SR-106 | Migrate the backend to Java 17 (Spring Boot) | Backend | Large | ✅ Done |
+| SR-107 | Agent-driven development: route domain work to specialist agents | Tooling | Medium | ✅ Done |
+| SR-108 | Add ticket-warden agent + commit-msg hook to enforce ticket workflow | Tooling | Medium | ✅ Done |
 | SR-109 | Read-only waitlist tab (mock data from a text file) | Full-stack (frontend + backend-java) | Medium | ✅ Done |
 | SR-110 | Maintain API curl-command reference (test-guardian) + generate initial doc | Repo tooling | Low | ✅ Done |
 
@@ -186,7 +186,9 @@ comparison operator against `MAX_FILES` with the intended inclusive limit.
 - **Difficulty:** Large
 - **Component:** Backend
 - **Files:** new `backend-java/` project (Python `backend/` kept as reference)
-- **Status:** 🔲 Open
+- **Status:** ✅ Done
+- **Fixed on branch:** `SR-106-migrate-backend-java`
+- **Fixed at:** 2026-07-12 22:18:24 +0200
 
 **Description**
 Re-implement the existing Python/Flask REST API in Java 17+ using Spring Boot +
@@ -210,7 +212,9 @@ against the Java backend.
 - **Type:** Task / Tooling
 - **Priority:** Medium
 - **Component:** Repo tooling (`.claude/agents/`, `CLAUDE.md`)
-- **Status:** 🔲 Open
+- **Status:** ✅ Done
+- **Fixed on branch:** `SR-106-migrate-backend-java`
+- **Fixed at:** 2026-07-12 22:18:24 +0200
 
 **Description**
 Make the specialist subagents the authors of their domains: `service-architect`
@@ -226,7 +230,9 @@ authoring, and documented it in `docs/agent-driven-development.md`.
 - **Type:** Task / Tooling
 - **Priority:** Medium
 - **Component:** Repo tooling (`.claude/agents/`, `.githooks/`, `CLAUDE.md`)
-- **Status:** 🔲 Open
+- **Status:** ✅ Done
+- **Fixed on branch:** `SR-108-ticket-warden-workflow`
+- **Fixed at:** 2026-07-13 00:06:13 +0200
 
 **Description**
 Introduce a `ticket-warden` agent (an "agentic product owner") that runs at the
