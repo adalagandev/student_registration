@@ -1,5 +1,7 @@
 package com.studentregistration.web;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -10,6 +12,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartException;
+import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 /**
  * GlobalExceptionHandler — the single place that turns exceptions into HTTP error
@@ -26,6 +30,15 @@ import org.springframework.web.multipart.MultipartException;
  */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    /**
+     * SLF4J logger — the FIRST logger introduced in this codebase. It exists so that
+     * unexpected 500s (see {@link #handleUnexpected}) are not invisible: the full
+     * exception and stack trace are written to the SERVER log while the CLIENT only ever
+     * sees a generic message. {@code static final} because a single, shared, immutable
+     * logger per class is the standard SLF4J idiom (no reason to build one per request).
+     */
+    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     /** The one and only error body shape: {@code {"error": "..."}}. */
     public record ErrorResponse(String error) {
@@ -122,14 +135,49 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Safety net for anything unforeseen. Returning JSON (rather than Spring's default
-     * error page) keeps the frontend's {@code response.json()} calls from choking. The
-     * message is included to aid debugging in this study project.
+     * No route matched the requested URL. Two distinct exceptions can mean "no such
+     * endpoint" depending on Spring's configuration, so we handle BOTH here:
+     * <ul>
+     *   <li>{@link NoResourceFoundException} — thrown by the resource-handling chain
+     *       (the default in modern Spring Boot) when nothing serves the path;</li>
+     *   <li>{@link NoHandlerFoundException} — thrown by the dispatcher when
+     *       {@code throw-exception-if-no-handler-found} is enabled.</li>
+     * </ul>
+     *
+     * <p><b>Why this exists:</b> without it, an unmatched route falls through to the
+     * catch-all below and is reported as a <b>500</b> — telling the client "the server
+     * broke" when the truth is "that URL does not exist". We map it to an honest
+     * <b>404</b>, still as {@code {"error": ...}} so the frontend's unconditional
+     * {@code response.json()} keeps working.
      */
+    // @agent: exception-warden
+    @ExceptionHandler({NoResourceFoundException.class, NoHandlerFoundException.class})
+    public ResponseEntity<ErrorResponse> handleNotFound(Exception ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse("Not found."));
+    }
+
+    /**
+     * Safety net for anything unforeseen — a bug, an unexpected library failure, etc.
+     * Returning JSON (rather than Spring's default error page) keeps the frontend's
+     * {@code response.json()} calls from choking.
+     *
+     * <p><b>Why the body is a FIXED string and NOT {@code ex.getMessage()}:</b> an
+     * unexpected exception's message is an INTERNAL detail — it can carry SQL fragments,
+     * file-system paths, library/class names, or other implementation specifics. Echoing
+     * it to an API client is an information leak (and a security defect), so the client
+     * only ever sees the generic {@code "Internal server error."}.
+     *
+     * <p><b>Why we log first:</b> a 500 that no one can see is a silent failure. We write
+     * the full exception WITH its stack trace to the SERVER log at ERROR level, so the
+     * detail we deliberately withhold from the client is still available to operators for
+     * debugging. Log verbosely inward; respond opaquely outward.
+     */
+    // @agent: exception-warden
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleUnexpected(Exception ex) {
-        String message = ex.getMessage() != null ? ex.getMessage() : "Internal server error.";
+        log.error("Unhandled exception while processing request", ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ErrorResponse(message));
+                .body(new ErrorResponse("Internal server error."));
     }
 }
