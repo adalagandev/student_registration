@@ -23,6 +23,7 @@ the behavior so it matches the **Expected** result.
 | SR-111 | Harden global exception handler: mask 500 messages + log, and 404 for unknown routes | Backend | Medium | ✅ Fixed |
 | SR-112 | Add controller-warden + frontend-warden agents (+ warden audit docs) | Tooling | Medium | ✅ Done |
 | SR-113 | Unify agent names on the `-warden` suffix (+ fix corrupted controller-warden frontmatter) | Tooling | Easy | ✅ Done |
+| SR-114 | Add persistence-warden agent (owns repository/entity/schema data-access layer) | Tooling | Medium | ✅ Done |
 
 ---
 
@@ -405,6 +406,46 @@ All six agents load with a valid `name:` following `<domain>-warden`; no live
 file references the old `service-architect` / `test-guardian` names; renamed
 companion dirs and example files match their agent; `controller-warden`
 frontmatter is valid again.
+
+---
+
+## SR-114 — Add persistence-warden agent (data-access layer)
+
+- **Type:** Tooling
+- **Priority:** Medium
+- **Difficulty:** Medium
+- **Component:** Repo tooling / `.claude/agents/`
+- **Status:** ✅ Done
+- **Fixed on branch:** `SR-114-add-persistence-warden-agent`
+- **Fixed at:** 2026-07-15 20:28:16 +0200
+
+**Description**
+Extend the `-warden` roster (SR-107 / SR-112 / SR-113) with a **persistence-warden**
+that owns the persistence / data-access layer, following the established warden
+shape (frontmatter with name/description/tools, "You are..." intro, prioritized
+Goals, explicit Negative scope, language-agnostic numbered Rules pointing to
+companion example files, Working Method, Authorship stamp, Report Format).
+
+Scope owned by the new agent:
+- Spring Data JPA `repository/` interfaces.
+- `@Entity` mappings in `entity/` — the snake_case `@Column(name=...)` boundary.
+- Hibernate schema migration (`ddl-auto=update`).
+- SQLite / DB access concerns.
+
+Deliverables:
+- New agent file `.claude/agents/persistence-warden.md`.
+- Companion refs directory `.claude/agents/persistence-warden-refs/` with Java
+  (and likely Python) example files, matching the other wardens' `-refs/` pattern.
+- Update `bug.md` roster table + ticket section (this entry).
+- Update `CLAUDE.md` (agent roster / delegation) and
+  `docs/agent-driven-development.md` to reference the new warden as needed.
+
+**Acceptance**
+persistence-warden loads as an available subagent type with valid frontmatter;
+it has a companion refs directory; rules read framework/language-agnostically
+with concrete examples in the companion files; `CLAUDE.md`,
+`docs/agent-driven-development.md`, and the `bug.md` roster stay consistent with
+the existing wardens.
 
 ---
 
