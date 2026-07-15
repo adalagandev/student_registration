@@ -21,6 +21,7 @@ the behavior so it matches the **Expected** result.
 | SR-109 | Read-only waitlist tab (mock data from a text file) | Full-stack (frontend + backend-java) | Medium | ✅ Done |
 | SR-110 | Maintain API curl-command reference (test-guardian) + generate initial doc | Repo tooling | Low | ✅ Done |
 | SR-111 | Harden global exception handler: mask 500 messages + log, and 404 for unknown routes | Backend | Medium | ✅ Fixed |
+| SR-112 | Add controller-warden + frontend-warden agents (+ warden audit docs) | Tooling | Medium | ✅ Done |
 
 ---
 
@@ -327,6 +328,44 @@ An unhandled server error returns HTTP 500 with body `{"error":"Internal server
 error."}` and is logged at ERROR level with a stack trace; a request to an unknown
 route returns HTTP 404 with body `{"error":"Not found."}`; the `{"error":"<msg>"}`
 shape is preserved throughout.
+
+---
+
+## SR-112 — Add controller-warden + frontend-warden agents (+ warden audit docs)
+
+- **Type:** Tooling
+- **Priority:** Medium
+- **Difficulty:** Medium
+- **Component:** Repo tooling / `.claude/agents/`
+- **Status:** ✅ Done
+- **Fixed on branch:** `SR-112-add-controller-and-frontend-warden-agents`
+- **Fixed at:** 2026-07-15 18:43:54 +0200
+
+**Description**
+Extend the agent-driven-development roster (SR-107) with two more specialist
+wardens, each following the established warden shape (prioritized Goals, explicit
+Negative scope, framework-agnostic numbered Rules pointing to per-language/
+per-framework companion example files, Working Method, Authorship stamp, and a
+consistent audit Report Format):
+
+- **controller-warden** — owns the API boundary layer (controllers/routers,
+  endpoint handlers): thin translation, DTOs in/out, status codes, declarative
+  validation and security. Companion examples for Java and Python.
+- **frontend-warden** — owns the React frontend (`frontend/src/`): the `api.js`
+  seam, immutable state, presentational children, controlled inputs, stable
+  `id`s, CSS-token theming, and teaching-comment density. Rules are written
+  framework-agnostically with a React/JSX companion example file.
+
+Also captures two audit outputs produced while exercising the existing wardens
+(`docs/exception-warden-audit.md`, `docs/service-architect-audit.md`) and the
+agent gap-analysis doc that motivated the two new wardens
+(`docs/2026-07-15_17-56-18.md`).
+
+**Acceptance**
+Both agents load as available subagent types with valid frontmatter; each has a
+companion refs directory; rules read framework/language-agnostically with
+concrete examples living in the companion files; `bug.md` and the roster stay
+consistent with the existing wardens.
 
 ---
 
