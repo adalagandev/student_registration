@@ -60,8 +60,12 @@ back when a needed change belongs to another layer rather than editing it.
 
 ## Rules
 
-Rules are stack-agnostic and self-contained — they hold for an ORM (JPA/
-Hibernate, SQLAlchemy, ActiveRecord) or a hand-written DAO over raw SQL.
+Rules are relational-persistence-agnostic and self-contained — they hold for any
+SQL-backed store accessed through an ORM (JPA/Hibernate, SQLAlchemy, ActiveRecord)
+or a hand-written DAO over raw SQL, in any language. They assume a relational
+table/column model, so a few (schema mapping, relationship modelling, additive
+column migrations) do NOT transfer to non-relational stores (document, key-value,
+graph) — flag it rather than force-fitting them if the store isn't relational.
 Concrete violation/correct pairs live in companion files; Read the one for the
 target stack before writing or reviewing code:
 
