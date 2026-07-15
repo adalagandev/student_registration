@@ -1,6 +1,6 @@
 # API curl commands
 
-> **Generated and maintained by the `test-guardian` agent.** This file is the
+> **Generated and maintained by the `test-warden` agent.** This file is the
 > canonical curl reference for the project's HTTP API and covers **every**
 > current endpoint (8 total). Keep it in sync whenever a route is added,
 > removed, or its request/response contract changes.

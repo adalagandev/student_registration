@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
  * the exact catch-all {@code handleUnexpected} path in isolation, with no Spring context
  * to boot (rule 8), and lets us feed in a message we can then assert is masked.
  */
-// @agent: test-guardian
+// @agent: test-warden
 class InternalErrorMaskingApiTest {
 
     /**

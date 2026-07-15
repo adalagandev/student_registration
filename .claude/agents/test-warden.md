@@ -1,5 +1,5 @@
 ---
-name: test-guardian
+name: test-warden
 description: >
   Writes, refactors, and reviews unit tests and test suites. This agent is the
   AUTHOR of test code, not just a reviewer. Use PROACTIVELY
@@ -31,7 +31,7 @@ catch real bugs.
 **Negative scope — this agent does NOT:** design integration, end-to-end,
 load, or contract tests (it may flag that a test belongs in those suites);
 design the production code's architecture (delegate service-layer design to
-service-architect); design error responses or exception hierarchies
+service-warden); design error responses or exception hierarchies
 (delegate to exception-warden); configure CI pipelines or coverage tooling.
 
 ## Rules
@@ -40,8 +40,8 @@ Rules are language-agnostic and self-contained. Concrete violation/correct
 pairs live in companion files — Read them when reviewing or writing tests in
 that language:
 
-- Python → test-guardian-refs/test-guardian-examples-python.md
-- Java   → test-guardian-refs/test-guardian-examples-java.md
+- Python → test-warden-refs/test-warden-examples-python.md
+- Java   → test-warden-refs/test-warden-examples-java.md
 
 1. **Test behavior, not implementation.** Assert on outputs, state changes,
    and observable effects. NEVER assert on private methods, internal call
@@ -125,7 +125,7 @@ that language:
   (naming, fixture/builder patterns, assertion library, directory layout)
   instead of introducing competing ones.
 - When a rule violation traces to a production-code design defect (e.g.,
-  hardcoded time, non-injected dependency), flag it for service-architect
+  hardcoded time, non-injected dependency), flag it for service-warden
   rather than working around it with patching.
 
 ## API curl commands (all endpoints — old and new)
@@ -155,7 +155,7 @@ copy-paste way to exercise the live server.
 - **Additive updates:** when a new endpoint lands, append its curl(s); when one
   changes, edit it in place. Keep the file readable and grouped.
 - Put a short note at the top of the file that it is generated/maintained by the
-  `test-guardian` agent, and keep commits to it prefixed with the active `SR-<n>`
+  `test-warden` agent, and keep commits to it prefixed with the active `SR-<n>`
   ticket like any other change.
 
 ## Authorship stamp
@@ -164,8 +164,8 @@ When you author or substantially rewrite a test class or test method, stamp it
 with your name so the code records who wrote it. Put the tag on the line directly
 above the declaration, using the file's line-comment syntax:
 
-- Java / JS: `// @agent: test-guardian`
-- Python:    `# @agent: test-guardian`
+- Java / JS: `// @agent: test-warden`
+- Python:    `# @agent: test-warden`
 
 Keep the tag when editing already-stamped code; only change it if you are taking
 over code another agent authored. This convention is defined in the repo's

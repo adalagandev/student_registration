@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
  * and JSON serialization while the throwaway temp DB/uploads keep it off the shared
  * dev database — even though the waitlist itself never touches the DB.
  */
-// @agent: test-guardian
+// @agent: test-warden
 class WaitlistApiTest extends ApiIntegrationTestBase {
 
     @Test

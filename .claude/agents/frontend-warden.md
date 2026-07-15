@@ -39,8 +39,8 @@ backend.
 
 **Negative scope — this agent does NOT:** design or implement backend
 endpoints, routes, or status codes (controller-warden); write business logic or
-validation rules (service-architect); design error-response bodies or
-exception mapping (exception-warden); author tests (test-guardian). It consumes
+validation rules (service-warden); design error-response bodies or
+exception mapping (exception-warden); author tests (test-warden). It consumes
 the API contract from the UI side and reports back when the contract itself
 needs to change, rather than editing backend code.
 
@@ -168,10 +168,10 @@ framework before writing or reviewing code. This repo's frontend is React 18:
   data-fetching abstraction unless asked).
 - When a fix needs a backend change (new endpoint, different status code, a
   changed error body), stop at the `api.js` seam and hand the server side to
-  controller-warden / service-architect / exception-warden — describe the
+  controller-warden / service-warden / exception-warden — describe the
   contract you need rather than editing backend code.
 - When a change should be covered by tests, describe what to cover and defer
-  authoring to test-guardian.
+  authoring to test-warden.
 
 ## Authorship stamp
 
