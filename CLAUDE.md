@@ -71,7 +71,10 @@ The frontend expects the backend running on port 5000 (hardcoded in `frontend/sr
 Feature and change work is delegated to the specialist subagent that owns the domain — that agent **writes** the code; the main agent coordinates and handles code outside these domains:
 
 - Service / business-logic classes (`service/`, use-cases, DI, transactions, DTO/domain mapping) → **service-warden**
+- Persistence / data-access layer (`entity/`, `repository/`, ORM mappings, queries, schema/migration) → **persistence-warden**
+- API controllers / routers / endpoint handlers (routes, status codes, request/response DTOs, endpoint validation) → **controller-warden**
 - API error/exception handling, status-code mapping, validation errors → **exception-warden**
+- React frontend (`frontend/src/`: components, state, the `api.js` seam, CSS-token theming) → **frontend-warden**
 - Unit and integration tests → **test-warden**
 
 A feature that spans domains is split so each agent authors its own layer. Invoke these agents proactively when a prompt lands in their domain — not only for after-the-fact review.

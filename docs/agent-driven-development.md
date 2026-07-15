@@ -97,5 +97,8 @@ new class in `service/` lacks a stamp — but it can't be the source of truth.
 | Agent | Owns | Example prompts that should route to it |
 |---|---|---|
 | `service-warden` | Service / business-logic classes, use-cases, DI, DTO/domain mapping, transactions | "Add an OrderService", "implement the refund flow", "split up UserService" |
+| `persistence-warden` | Persistence / data-access layer: ORM entities, repositories/DAOs, query methods, schema/migration mechanics | "Add a nickname column to Student", "list a student's documents newest-first", "make Document a real @ManyToOne" |
+| `controller-warden` | API controllers / routers / endpoint handlers: routes, status codes, request/response DTOs, endpoint validation & security | "Add a StudentController", "new endpoint for registrations", "this endpoint returns 200 with an error body" |
 | `exception-warden` | API error/exception handling, status-code mapping, validation errors, exception middleware | "Add error handling to POST /orders", "why does this return 200 with an error body?" |
+| `frontend-warden` | React frontend (`frontend/src/`): components, immutable state, the `api.js` seam, controlled inputs, CSS-token theming | "Add a phone column to the student table", "wire up a delete-student button", "re-theme to light mode" |
 | `test-warden` | Unit/integration tests, flaky/slow test diagnosis, test refactors, regression tests for bug fixes | "Add tests for OrderService", "cover the refund flow", "add a regression test" |
