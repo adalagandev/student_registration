@@ -20,7 +20,7 @@ import org.junit.jupiter.params.provider.MethodSource;
  * static, read-only mock data (not the database), so reading it is deterministic
  * and correct, not an I/O isolation breach.
  */
-// @agent: test-guardian
+// @agent: test-warden
 class WaitlistServiceTest {
 
     private final WaitlistService service = new WaitlistService();

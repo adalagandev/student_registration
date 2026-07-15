@@ -22,6 +22,7 @@ the behavior so it matches the **Expected** result.
 | SR-110 | Maintain API curl-command reference (test-guardian) + generate initial doc | Repo tooling | Low | ✅ Done |
 | SR-111 | Harden global exception handler: mask 500 messages + log, and 404 for unknown routes | Backend | Medium | ✅ Fixed |
 | SR-112 | Add controller-warden + frontend-warden agents (+ warden audit docs) | Tooling | Medium | ✅ Done |
+| SR-113 | Unify agent names on the `-warden` suffix (+ fix corrupted controller-warden frontmatter) | Tooling | Easy | ✅ Done |
 
 ---
 
@@ -366,6 +367,44 @@ Both agents load as available subagent types with valid frontmatter; each has a
 companion refs directory; rules read framework/language-agnostically with
 concrete examples living in the companion files; `bug.md` and the roster stay
 consistent with the existing wardens.
+
+---
+
+## SR-113 — Unify agent names on the `-warden` suffix
+
+- **Type:** Tooling
+- **Priority:** Low
+- **Difficulty:** Easy
+- **Component:** Repo tooling / `.claude/agents/`
+- **Status:** ✅ Done
+- **Fixed on branch:** `SR-113-unify-agent-warden-suffix`
+- **Fixed at:** 2026-07-15 19:32:45 +0200
+
+**Description**
+The specialist-agent roster mixed suffixes (`-warden`, `-architect`, `-guardian`).
+Standardize on the majority `-warden` so the six agents read as one consistent
+set. Two agents renamed; the other four already conform:
+
+- `service-architect` → **`service-warden`**
+- `test-guardian` → **`test-warden`**
+
+Renamed each agent's file, its `-refs/` companion directory, and the example
+files inside; updated the `name:` frontmatter and every live cross-reference —
+the other agents' delegation/negative-scope mentions, `CLAUDE.md`, the
+`docs/agent-driven-development.md` rationale, `docs/api-curl-commands.md`, and
+the `// @agent:` authorship stamps in `backend-java/` source so they still point
+at existing agents. Dated historical artifacts were left as-is by design
+(`docs/service-architect-audit.md`, the gap-analysis doc, prior `bug.md` entries).
+
+Also fixed a pre-existing corruption in `.claude/agents/controller-warden.md`
+whose frontmatter read `Can name: controller-warden` (invalid YAML), which had
+been preventing the `controller-warden` agent from loading.
+
+**Acceptance**
+All six agents load with a valid `name:` following `<domain>-warden`; no live
+file references the old `service-architect` / `test-guardian` names; renamed
+companion dirs and example files match their agent; `controller-warden`
+frontmatter is valid again.
 
 ---
 

@@ -42,7 +42,7 @@ class ErrorShapeApiTest extends ApiIntegrationTestBase {
      * ({@code {timestamp,status,error,message,path}}). {@code /api/bogus} is deliberately a
      * route no controller declares, so it exercises {@code handleNotFound}.
      */
-    // @agent: test-guardian
+    // @agent: test-warden
     @Test
     void unknownRouteReturns404WithOurNotFoundErrorShapeNotSpringDefault() throws Exception {
         mockMvc.perform(get("/api/bogus"))

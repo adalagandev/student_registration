@@ -18,7 +18,7 @@ package com.studentregistration.dto;
  * <p>A Java {@code record} is a compact, immutable data class: declaring the
  * components below auto-generates the constructor and accessor methods.
  */
-// @agent: service-architect
+// @agent: service-warden
 public record WaitlistEntryDto(
         String name,
         String email,

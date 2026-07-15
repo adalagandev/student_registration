@@ -1,7 +1,7 @@
 # Agent-Driven Development: Auto-Delegation & Authorship Stamps
 
-How to make your custom subagents (`service-architect`, `exception-warden`,
-`test-guardian`) **write the code in their domain**, **run automatically when you
+How to make your custom subagents (`service-warden`, `exception-warden`,
+`test-warden`) **write the code in their domain**, **run automatically when you
 prompt for a feature**, and **stamp their name** on what they author.
 
 > **TL;DR** — There is no single "always route X to agent Y" switch in Claude Code.
@@ -41,9 +41,9 @@ delegate." Use it *together with* the agent descriptions. Add:
 Feature/change work is delegated to the specialist subagent that owns the
 domain — that agent WRITES the code, the main agent only coordinates:
 
-- Service / business-logic classes (service/, use-cases) → service-architect
+- Service / business-logic classes (service/, use-cases) → service-warden
 - API error/exception handling, status mapping, validation → exception-warden
-- Unit/integration tests → test-guardian
+- Unit/integration tests → test-warden
 
 A feature spanning domains is split so each agent authors its own layer.
 
@@ -51,7 +51,7 @@ A feature spanning domains is split so each agent authors its own layer.
 Every class or function an agent authors or substantially rewrites carries a
 tag on the line directly above its declaration, e.g.:
 
-    // @agent: service-architect
+    // @agent: service-warden
     public class OrderService { ... }
 
 Keep the tag on edits; change it only when a different agent takes the code over.
@@ -90,12 +90,12 @@ new class in `service/` lacks a stamp — but it can't be the source of truth.
   auto-delegate **most of the time**.
 - ✅ `CLAUDE.md` convention + per-agent instruction → name stamps.
 - ⚠️ **Not 100% deterministic** — delegation is heuristic. If it ever misses, a one-line
-  reminder ("have service-architect do it") re-routes it.
+  reminder ("have service-warden do it") re-routes it.
 
 ## Domain → agent reference
 
 | Agent | Owns | Example prompts that should route to it |
 |---|---|---|
-| `service-architect` | Service / business-logic classes, use-cases, DI, DTO/domain mapping, transactions | "Add an OrderService", "implement the refund flow", "split up UserService" |
+| `service-warden` | Service / business-logic classes, use-cases, DI, DTO/domain mapping, transactions | "Add an OrderService", "implement the refund flow", "split up UserService" |
 | `exception-warden` | API error/exception handling, status-code mapping, validation errors, exception middleware | "Add error handling to POST /orders", "why does this return 200 with an error body?" |
-| `test-guardian` | Unit/integration tests, flaky/slow test diagnosis, test refactors, regression tests for bug fixes | "Add tests for OrderService", "cover the refund flow", "add a regression test" |
+| `test-warden` | Unit/integration tests, flaky/slow test diagnosis, test refactors, regression tests for bug fixes | "Add tests for OrderService", "cover the refund flow", "add a regression test" |

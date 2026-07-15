@@ -70,9 +70,9 @@ The frontend expects the backend running on port 5000 (hardcoded in `frontend/sr
 
 Feature and change work is delegated to the specialist subagent that owns the domain — that agent **writes** the code; the main agent coordinates and handles code outside these domains:
 
-- Service / business-logic classes (`service/`, use-cases, DI, transactions, DTO/domain mapping) → **service-architect**
+- Service / business-logic classes (`service/`, use-cases, DI, transactions, DTO/domain mapping) → **service-warden**
 - API error/exception handling, status-code mapping, validation errors → **exception-warden**
-- Unit and integration tests → **test-guardian**
+- Unit and integration tests → **test-warden**
 
 A feature that spans domains is split so each agent authors its own layer. Invoke these agents proactively when a prompt lands in their domain — not only for after-the-fact review.
 
@@ -81,7 +81,7 @@ A feature that spans domains is split so each agent authors its own layer. Invok
 Every class or function an agent authors or substantially rewrites carries an authorship tag on the line directly above its declaration, using the file's line-comment syntax:
 
 ```
-// @agent: service-architect      (Java / JS)
+// @agent: service-warden      (Java / JS)
 # @agent: exception-warden        (Python)
 ```
 

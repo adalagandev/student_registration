@@ -31,7 +31,7 @@ import org.springframework.stereotype.Service;
  * running from an unpacked {@code target/classes} folder in the IDE or from a
  * packaged jar in production — {@code getInputStream()} works in both cases.
  */
-// @agent: service-architect
+// @agent: service-warden
 @Service
 public class WaitlistService {
 

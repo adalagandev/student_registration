@@ -262,5 +262,5 @@ class StudentControllerTest {
     @Test void postStudentsReturns201WithLocation() { ... }
     @Test void malformedEmailReturns400() { ... }
     @Test void deleteRequiresAdminRole() { ... }
-}   // course-full behavior is a service test (test-guardian's territory)
+}   // course-full behavior is a service test (test-warden's territory)
 ```
