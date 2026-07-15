@@ -23,7 +23,7 @@ the behavior so it matches the **Expected** result.
 | SR-111 | Harden global exception handler: mask 500 messages + log, and 404 for unknown routes | Backend | Medium | ✅ Fixed |
 | SR-112 | Add controller-warden + frontend-warden agents (+ warden audit docs) | Tooling | Medium | ✅ Done |
 | SR-113 | Unify agent names on the `-warden` suffix (+ fix corrupted controller-warden frontmatter) | Tooling | Easy | ✅ Done |
-| SR-114 | Add persistence-warden agent (owns repository/entity/schema data-access layer) | Tooling | Medium | 🚧 In progress |
+| SR-114 | Add persistence-warden agent (owns repository/entity/schema data-access layer) | Tooling | Medium | ✅ Done |
 
 ---
 
@@ -415,7 +415,9 @@ frontmatter is valid again.
 - **Priority:** Medium
 - **Difficulty:** Medium
 - **Component:** Repo tooling / `.claude/agents/`
-- **Status:** 🚧 In progress
+- **Status:** ✅ Done
+- **Fixed on branch:** `SR-114-add-persistence-warden-agent`
+- **Fixed at:** 2026-07-15 20:28:16 +0200
 
 **Description**
 Extend the `-warden` roster (SR-107 / SR-112 / SR-113) with a **persistence-warden**
